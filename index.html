@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrçaMetro - Profissional V3.2</title>
+    
+    <!-- Importação de Fontes Premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Ícones FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#0b0f19',
+                        cardBg: '#111827',
+                        innerCard: '#1f2937',
+                        accentYellow: '#f59e0b',
+                        accentYellowHover: '#d97706',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .fator-btn-active {
+            background-color: #f59e0b !important;
+            color: #0b0f19 !important;
+            border-color: #f59e0b !important;
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-200 min-h-screen pb-16 font-sans">
+
+    <!-- HEADER DO APP -->
+    <header class="p-6 max-w-md mx-auto flex items-center justify-between border-b border-gray-900/80">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-br from-amber-400 to-amber-600 text-darkBg font-black text-xl flex items-center justify-center w-11 h-11 rounded-2xl shadow-lg shadow-amber-500/20">
+                <i class="fa-solid fa-chart-simple text-darkBg text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold text-white tracking-wide font-outfit">Orça<span class="text-accentYellow">Metro</span></h1>
+                <p class="text-[10px] text-amber-500 font-bold tracking-widest uppercase">MVP Comercial V3.2</p>
+            </div>
+        </div>
+        <div id="badge-status" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            Online
+        </div>
+    </header>
+
+    <!-- MENU DE ABAS DE NAVEGAÇÃO -->
+    <nav class="max-w-md mx-auto px-5 mt-6">
+        <div class="bg-black/40 p-1.5 rounded-2xl flex gap-1 border border-gray-800/60">
+            <button id="tab-orcamento" onclick="switchTab('orcamento')" class="flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 bg-accentYellow text-darkBg shadow-md">
+                <i class="fa-solid fa-calculator mr-1.5"></i>Orçamento
+            </button>
+            <button id="tab-historico" onclick="switchTab('historico')" class="flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-clock-rotate-left mr-1.5"></i>Histórico
+            </button>
+            <button id="tab-configurar" onclick="switchTab('configurar')" class="flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-gear mr-1.5"></i>Configurar
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================== -->
+    <!-- ABA 1: NOVO ORÇAMENTO                          -->
+    <!-- ============================================== -->
+    <main id="view-orcamento" class="max-w-md mx-auto px-5 mt-6 space-y-5">
+        
+        <!-- Identificação Básica -->
+        <section class="glass-card p-5 rounded-3xl space-y-4 shadow-xl">
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Nome do Cliente (Opcional)</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-500">
+                        <i class="fa-solid fa-user text-xs"></i>
+                    </span>
+                    <input type="text" id="cliente-nome" placeholder="Ex: João Silva" class="w-full bg-black/40 border border-gray-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-accentYellow transition-all">
+                </div>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Tipo de Adesivo / Serviço</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-500">
+                        <i class="fa-solid fa-scroll text-xs"></i>
+                    </span>
+                    <select id="servico-material" class="w-full bg-black/40 border border-gray-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white focus:outline-none focus:border-accentYellow transition-all appearance-none">
+                        <!-- Dinâmico -->
+                    </select>
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-500">
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Medidas Operacionais e Logística -->
+        <section class="glass-card p-5 rounded-3xl shadow-xl space-y-4">
+            <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-ruler-combined mr-1.5 text-accentYellow"></i>Dimensões e Logística</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2">Largura (Metros)</label>
+                    <input type="number" step="0.01" id="medida-largura" placeholder="0,00" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-white text-center text-lg font-bold font-outfit focus:outline-none focus:border-accentYellow transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-2">Altura (Metros)</label>
+                    <input type="number" step="0.01" id="medida-altura" placeholder="0,00" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-white text-center text-lg font-bold font-outfit focus:outline-none focus:border-accentYellow transition-all">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-2">Distância do Deslocamento (KM - Ida e Volta)</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-500">
+                        <i class="fa-solid fa-route text-xs"></i>
+                    </span>
+                    <input type="number" id="medida-distancia" placeholder="Deixe 0 se não houver viagem" class="w-full bg-black/40 border border-gray-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white focus:outline-none focus:border-accentYellow transition-all">
+                </div>
+            </div>
+        </section>
+
+        <!-- Complexidade da Instalação -->
+        <section class="glass-card p-5 rounded-3xl shadow-xl">
+            <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3"><i class="fa-solid fa-circle-exclamation mr-1.5 text-accentYellow"></i>Grau de Instalação</h2>
+            <div class="grid grid-cols-3 gap-2">
+                <button id="btn-fator-facil" onclick="setFator(1.0, 'facil')" class="fator-btn py-3.5 px-2 rounded-2xl border border-accentYellow bg-accentYellow text-darkBg font-bold transition-all flex flex-col items-center">
+                    <span class="text-sm font-outfit">Fácil</span>
+                    <span class="text-[10px] opacity-80 mt-1 font-normal">Fator 1.0</span>
+                </button>
+                <button id="btn-fator-medio" onclick="setFator(1.4, 'medio')" class="fator-btn py-3.5 px-2 rounded-2xl border border-gray-800 bg-black/30 text-gray-400 font-bold transition-all flex flex-col items-center hover:border-gray-700">
+                    <span class="text-sm font-outfit">Médio</span>
+                    <span class="text-[10px] opacity-60 mt-1 font-normal">Fator 1.4</span>
+                </button>
+                <button id="btn-fator-dificil" onclick="setFator(1.8, 'dificil')" class="fator-btn py-3.5 px-2 rounded-2xl border border-gray-800 bg-black/30 text-gray-400 font-bold transition-all flex flex-col items-center hover:border-gray-700">
+                    <span class="text-sm font-outfit">Difícil</span>
+                    <span class="text-[10px] opacity-60 mt-1 font-normal">Fator 1.8</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- BOTÃO DE CALCULAR imponente -->
+        <div class="py-2">
+            <button onclick="calcularOrcamento()" class="w-full py-5 px-6 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-darkBg font-extrabold rounded-2xl shadow-xl shadow-amber-500/20 active:scale-[0.98] transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-3 border border-amber-300/30">
+                <i class="fa-solid fa-calculator text-base animate-bounce"></i> 
+                <span>Calcular Orçamento Justo</span>
+            </button>
+        </div>
+
+        <!-- Bloco de Resultado Final -->
+        <section class="glass-card p-6 rounded-3xl text-center shadow-2xl border-amber-500/20 relative overflow-hidden">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Valor Total ao Cliente</p>
+            <div id="resultado-valor" class="text-4xl font-black text-accentYellow tracking-tight mb-2 font-outfit">R$ 0,00</div>
+            
+            <!-- Painel Interno Avançado -->
+            <div class="bg-black/30 border border-gray-800/80 rounded-2xl p-3 mb-6 flex flex-col gap-1 text-xs text-gray-400">
+                <div class="flex justify-between px-2">
+                    <span>Área Realizada:</span>
+                    <strong id="resultado-area" class="text-gray-200">0,00m²</strong>
+                </div>
+                <div class="flex justify-between px-2">
+                    <span>Adicional Frete/Rodagem:</span>
+                    <strong id="resultado-frete" class="text-gray-200">R$ 0,00</strong>
+                </div>
+                <div class="flex justify-between px-2 pt-1 border-t border-gray-800/50">
+                    <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-wallet mr-1"></i>Lucro Líquido Previsto:</span>
+                    <strong id="resultado-lucro" class="text-emerald-400">R$ 0,00 (0%)</strong>
+                </div>
+            </div>
+            
+            <!-- BOTÃO DE SAÍDA: WhatsApp -->
+            <div class="space-y-3">
+                <button onclick="enviarWhatsApp()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Mensagem para o Cliente
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================== -->
+    <!-- ABA 2: HISTÓRICO DE ORÇAMENTOS                 -->
+    <!-- ============================================== -->
+    <main id="view-historico" class="max-w-md mx-auto px-5 mt-6 space-y-4 hidden">
+        <div class="flex items-center justify-between mb-2">
+            <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-list-check mr-1.5 text-accentYellow"></i>Últimos Cálculos</h2>
+            <button onclick="limparHistorico()" class="text-[10px] text-red-400 hover:text-red-300 font-bold">
+                <i class="fa-solid fa-trash-can mr-1"></i>Limpar Tudo
+            </button>
+        </div>
+        <div id="lista-historico" class="space-y-3"></div>
+    </main>
+
+    <!-- ============================================== -->
+    <!-- ABA 3: CONFIGURAR PARÂMETROS                   -->
+    <!-- ============================================== -->
+    <main id="view-configurar" class="max-w-md mx-auto px-5 mt-6 space-y-5 hidden">
+        
+        <!-- Identidade Corporativa -->
+        <section class="glass-card p-5 rounded-3xl space-y-4">
+            <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-building mr-1.5 text-accentYellow"></i>Identidade da Oficina</h2>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-2">Nome Comercial</label>
+                <input type="text" id="cfg-empresa" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+            </div>
+        </section>
+
+        <!-- Configurações de Custos por Material -->
+        <section class="glass-card p-5 rounded-3xl space-y-4">
+            <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-tags mr-1.5 text-accentYellow"></i>Preço de Custo dos Adesivos (/m²)</h2>
+            <p class="text-[10px] text-amber-500 -mt-2">Insira aqui o valor real cobrado pelo seu fornecedor gráfico.</p>
+            
+            <div id="lista-materials-config" class="space-y-3"></div>
+
+            <div class="pt-4 border-t border-gray-800/80">
+                <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Adicionar Novo Material (Custo)</p>
+                <div class="flex gap-2">
+                    <input type="text" id="add-material-nome" placeholder="Ex: Vinil Fosco" class="flex-1 bg-black/40 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-white">
+                    <input type="number" id="add-material-preco" placeholder="Custo/m²" class="w-20 bg-black/40 border border-gray-800 rounded-xl px-2 py-2.5 text-xs text-white text-center">
+                    <button onclick="adicionarMaterialNovo()" class="bg-accentYellow text-darkBg text-xs font-bold px-3.5 py-2.5 rounded-xl"><i class="fa-solid fa-plus"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Custos Logísticos e Regras -->
+        <section class="glass-card p-5 rounded-3xl space-y-4">
+            <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-circle-dollar-to-slot mr-1.5 text-accentYellow"></i>Regras de Markup e Logística</h2>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-2">Margem de Lucro Desejada (%)</label>
+                <input type="number" id="cfg-margem" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-emerald-400 font-bold focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-2">Valor Cobrado por KM Rodado (R$)</label>
+                <input type="number" step="0.01" id="cfg-valorkm" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-2">Taxa Base de Instalação (R$)</label>
+                <input type="number" id="cfg-taxabase" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-2">Validade do Orçamento (Dias)</label>
+                <input type="number" id="cfg-validade" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-2">WhatsApp de Destino</label>
+                <input type="text" id="cfg-whatsapp" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+            </div>
+        </section>
+
+        <button onclick="salvarConfiguracoes()" class="w-full py-4 bg-accentYellow hover:bg-accentYellowHover text-darkBg font-extrabold rounded-2xl uppercase tracking-wider text-xs">
+            <i class="fa-solid fa-floppy-disk mr-1.5"></i> Salvar Parâmetros V3.2
+        </button>
+    </main>
+
+    <footer class="mt-12 text-center text-[10px] text-gray-400/80 max-w-md mx-auto px-5">
+        <p>OrçaMetro é propriedade intelectual de Denys Alcântara.</p>
+        <p class="mt-1 text-accentYellow font-semibold tracking-wide">Licença Comercial MVP Ativa</p>
+    </footer>
+
+    <!-- ============================================== -->
+    <!-- MOTOR LOGIC JAVASCRIPT COMPLETADO E REVISADO   -->
+    <!-- ============================================== -->
+    <script>
+        let fFactor = 1.0;
+        let valorCalculado = 0.0;
+        let areaCalculada = 0.0;
+        let lucroCalculado = 0.0;
+        let freteCalculado = 0.0;
+
+        const configPadrao = {
+            empresa: "Denys Alcântara",
+            taxaBase: 25,
+            validade: 3,
+            whatsapp: "11939386682",
+            margemLucro: 100,
+            valorKm: 1.50,
+            materiais: [
+                { nome: "Adesivo Brilho (Custo)", preco: 40 },
+                { nome: "Adesivo Perfurado (Custo)", preco: 55 },
+                { nome: "Adesivo Recortado (Custo)", preco: 65 }
+            ]
+        };
+
+        window.onload = function() {
+            if (!localStorage.getItem('orcametro_config_v3_db')) {
+                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(configPadrao));
+            }
+            if (!localStorage.getItem('orcametro_historico_v3_db')) {
+                localStorage.setItem('orcametro_historico_v3_db', JSON.stringify([]));
+            }
+            carregarConfiguracoes();
+            renderHistorico();
+        }
+
+        function carregarConfiguracoes() {
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
+            if(config.valorKm === undefined) config.valorKm = 1.50;
+
+            document.getElementById('cfg-empresa').value = config.empresa;
+            document.getElementById('cfg-taxabase').value = config.taxaBase;
+            document.getElementById('cfg-validade').value = config.validade;
+            document.getElementById('cfg-whatsapp').value = config.whatsapp;
+            document.getElementById('cfg-margem').value = config.margemLucro;
+            document.getElementById('cfg-valorkm').value = config.valorKm;
+
+            const select = document.getElementById('servico-material');
+            select.innerHTML = '';
+            
+            const listaMateriais = config.materiais || config.materials || [];
+            listaMateriais.forEach((mat, i) => {
+                select.innerHTML += `<option value="${i}">${mat.nome}</option>`;
+            });
+
+            renderListaMateriaisConfig();
+        }
+
+        function renderListaMateriaisConfig() {
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
+            const container = document.getElementById('lista-materials-config');
+            if(!container) return;
+            container.innerHTML = '';
+
+            const listaMateriais = config.materiais || config.materials || [];
+            listaMateriais.forEach((mat, i) => {
+                container.innerHTML += `
+                    <div class="flex items-center gap-2 bg-black/20 p-2 rounded-xl border border-gray-800/40">
+                        <span class="text-xs flex-1 truncate">${mat.nome}</span>
+                        <span class="text-xs font-bold text-accentYellow font-outfit">R$ ${mat.preco}/m²</span>
+                        <button onclick="removerMaterial(${i})" class="text-red-400 hover:text-red-300 px-2"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function adicionarMaterialNovo() {
+            const nome = document.getElementById('add-material-nome').value.trim();
+            const preco = parseFloat(document.getElementById('add-material-preco').value);
+            if(!nome || isNaN(preco) || preco <= 0) return alert("Insira um nome e um custo válidos!");
+
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
+            config.materiais.push({ nome, preco });
+            localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
+            
+            document.getElementById('add-material-nome').value = '';
+            document.getElementById('add-material-preco').value = '';
+            carregarConfiguracoes();
+        }
+
+        function removerMaterial(index) {
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
+            if(config.materiais.length <= 1) return alert("Mantenha ao menos um material ativo.");
+            config.materiais.splice(index, 1);
+            localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
+            carregarConfiguracoes();
+        }
+
+        function salvarConfiguracoes() {
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
+            config.empresa = document.getElementById('cfg-empresa').value.trim() || "Sua Oficina";
+            config.taxaBase = parseFloat(document.getElementById('cfg-taxabase').value) || 0;
+            config.validade = parseInt(document.getElementById('cfg-validade').value) || 3;
+            config.whatsapp = document.getElementById('cfg-whatsapp').value.trim();
+            config.margemLucro = parseFloat(document.getElementById('cfg-margem').value) || 0;
+            config.valorKm = parseFloat(document.getElementById('cfg-valorkm').value) || 0;
+
+            localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
+            alert("Parâmetros operacionais atualizados com sucesso!");
+            switchTab('orcamento');
+        }
+
+        function setFator(valor, tipo) {
+            fFactor = valor;
+            document.querySelectorAll('.fator-btn').forEach(b => {
+                b.classList.remove('fator-btn-active');
+                b.classList.add('bg-black/30', 'text-gray-400', 'border-gray-800');
+            });
+            const btnActive = document.getElementById(`btn-fator-${tipo}`);
+            btnActive.classList.add('fator-btn-active');
+            btnActive.classList.remove('bg-black/30', 'text-gray-400', 'border-gray-800');
+        }
+
+        function switchTab(tab) {
+            ['orcamento', 'historico', 'configurar'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('bg-accentYellow', 'text-darkBg', 'shadow-md');
+                document.getElementById(`tab-${t}`).classList.add('text-gray-400');
+            });
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).classList.add('bg-accentYellow', 'text-darkBg', 'shadow-md');
+            document.getElementById(`tab-${tab}`).classList.remove('text-gray-400');
+        }
+
+        function calcularOrcamento() {
+            const larg = parseFloat(document.getElementById('medida-largura').value) || 0;
+            const alt = parseFloat(document.getElementById('medida-altura').value) || 0;
+            const km = parseFloat(document.getElementById('medida-distancia').value) || 0;
+
+            if(larg <= 0 || alt <= 0) return alert("Insira as dimensões de largura e altura!");
+
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
+            const indexMat = document.getElementById('servico-material').value;
+            const mat = config.materiais[indexMat];
+
+            areaCalculada = larg * alt;
+            freteCalculado = km * config.valorKm;
+
+            let custoMaterialBruto = areaCalculada * mat.preco;
+            let custoComInstalacao = (custoMaterialBruto + config.taxaBase) * fFactor;
+            
+            valorCalculado = (custoComInstalacao * (1 + (config.margemLucro / 100))) + freteCalculado;
+            lucroCalculado = valorCalculado - (custoMaterialBruto + freteCalculado);
+
+            document.getElementById('resultado-valor').innerText = "R$ " + valorCalculado.toFixed(2).replace('.', ',');
+            document.getElementById('resultado-area').innerText = areaCalculada.toFixed(2).replace('.', ',') + "m²";
+            document.getElementById('resultado-frete').innerText = "R$ " + freteCalculado.toFixed(2).replace('.', ',');
+            document.getElementById('resultado-lucro').innerText = `R$ ${lucroCalculado.toFixed(2).replace('.', ',')} (${config.margemLucro}%)`;
+
+            salvarNoHistorico(mat.nome, areaCalculada, valorCalculado);
+        }
+
+        function salvarNoHistorico(materialNome, area, total) {
+            const historico = JSON.parse(localStorage.getItem('orcametro_historico_v3_db')) || [];
+            const cliente = document.getElementById('cliente-nome').value.trim() || "Cliente Geral";
+            
+            const novoItem = {
+                data: new Date().toLocaleDateString('pt-BR'),
+                cliente,
+                materialNome,
+                area,
+                total
+            };
+
+            historico.unshift(novoItem);
+            if(historico.length > 20) historico.pop();
+            localStorage.setItem('orcametro_historico_v3_db', JSON.stringify(historico));
+            renderHistorico();
+        }
+
+        function renderHistorico() {
+            const historico = JSON.parse(localStorage.getItem('orcametro_historico_v3_db')) || [];
+            const container = document.getElementById('lista-historico');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(historico.length === 0) {
+                container.innerHTML = `<div class="text-center p-6 text-xs text-gray-500">Nenhum cálculo recente encontrado.</div>`;
+                return;
+            }
+
+            historico.forEach(item => {
+                container.innerHTML += `
+                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center border border-gray-800/40">
+                        <div>
+                            <h4 class="text-xs font-bold text-white">${item.cliente}</h4>
+                            <p class="text-[10px] text-gray-400 mt-0.5">${item.materialNome} • ${item.area.toFixed(2)}m²</p>
+                            <span class="text-[9px] text-gray-500 block mt-1">${item.data}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-extrabold text-accentYellow font-outfit">R$ ${item.total.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function limparHistorico() {
+            if(confirm("Deseja apagar o histórico de cálculos?")) {
+                localStorage.setItem('orcametro_historico_v3_db', JSON.stringify([]));
+                renderHistorico();
+            }
+        }
+
+        function enviarWhatsApp() {
+            if(valorCalculado <= 0) return alert("Efetue o cálculo antes de disparar o WhatsApp.");
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
+            const num = config.whatsapp.replace(/\D/g,'');
+            
+            const cliente = document.getElementById('cliente-nome').value.trim() || "Cliente";
+            const indexMat = document.getElementById('servico-material').value;
+            let matNome = config.materiais[indexMat].nome;
+
+            // Remove o texto "(Custo)" ou "(custo)" se houver no nome cadastrado do material
+            matNome = matNome.replace(/\s*\(custo\)/i, '');
+
+            const larg = parseFloat(document.getElementById('medida-largura').value).toFixed(2).replace('.', ',');
+            const alt = parseFloat(document.getElementById('medida-altura').value).toFixed(2).replace('.', ',');
+            const areaStr = areaCalculada.toFixed(2).replace('.', ',');
+            const totalStr = valorCalculado.toFixed(2).replace('.', ',');
+
+            const msg = `Olá, ${cliente}! Segue o seu orçamento solicitado: 📋\n\n` +
+                        `📏 *Serviço*: ${matNome}\n` +
+                        `📐 *Medidas*: ${larg}m x ${alt}m (Área: ${areaStr}m²)\n\n` +
+                        `💰 *Valor Total (com entrega/instalação)*: R$ ${totalStr}\n\n` +
+                        `*Orçamento válido por ${config.validade} dias.*\n\n` +
+                        `Para aprovar ou tirar dúvidas, é só responder por aqui! 🤝`;
+            
+            window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
