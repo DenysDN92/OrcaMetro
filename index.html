@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OrçaMetro - Profissional V3.2</title>
+    <title>OrçaMetro - Profissional V3.3</title>
     
     <!-- Importação de Fontes Premium -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,11 +81,17 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-extrabold text-white tracking-wide font-outfit">Orça<span class="text-accentYellow">Metro</span></h1>
-                    <p class="text-[10px] text-amber-500 font-bold tracking-widest uppercase">MVP Comercial V3.2</p>
+                    <p class="text-[10px] text-amber-500 font-bold tracking-widest uppercase">MVP Comercial V3.3</p>
                 </div>
             </div>
-            <div id="badge-status" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                Acesso Ativo
+            <!-- ÁREA DA DIREITA: STATUS E BOTAO SAIR DISCRETO -->
+            <div class="flex flex-col items-end gap-1.5">
+                <div id="badge-status" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    Acesso Ativo
+                </div>
+                <button onclick="fazerLogout()" class="text-[10px] text-gray-500 hover:text-red-400 transition-colors font-medium flex items-center gap-1 bg-gray-900/40 px-2 py-0.5 rounded border border-gray-800/40">
+                    <i class="fa-solid fa-right-from-bracket text-[9px]"></i> Sair
+                </button>
             </div>
         </header>
 
@@ -267,7 +273,7 @@
             </section>
 
             <button onclick="salvarConfiguracoes()" class="w-full py-4 bg-accentYellow hover:bg-accentYellowHover text-darkBg font-extrabold rounded-2xl uppercase tracking-wider text-xs">
-                <i class="fa-solid fa-floppy-disk mr-1.5"></i> Salvar Parâmetros V3.2
+                <i class="fa-solid fa-floppy-disk mr-1.5"></i> Salvar Parâmetros V3.3
             </button>
         </main>
 
@@ -279,19 +285,54 @@
 
     <!-- MOTOR LOGIC JAVASCRIPT COMPLETADO E REVISADO -->
     <script>
-        // FUNÇÃO DE VALIDAÇÃO DE ACESSO COM A SENHA ESCOLHIDA
+        // MOTOR DE VERIFICAÇÃO DE ACESSO COM MEMÓRIA DO NAVEGADOR
+        window.onload = function() {
+            // Verifica se este navegador já acertou a senha antes
+            const acessoLiberado = localStorage.getItem('orcametro_acesso_valido');
+            
+            if (acessoLiberado === "true") {
+                // Se sim, pula direto pra dentro do app
+                document.getElementById('lockscreen').classList.add('hidden');
+                document.getElementById('app-content').classList.remove('hidden');
+            }
+
+            if (!localStorage.getItem('orcametro_config_v3_db')) {
+                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(configPadrao));
+            }
+            if (!localStorage.getItem('orcametro_historico_v3_db')) {
+                localStorage.setItem('orcametro_historico_v3_db', JSON.stringify([]));
+            }
+            carregarConfiguracoes();
+            renderHistorico();
+            
+            if (acessoLiberado !== "true") {
+                document.getElementById('input-senha').focus();
+            }
+        }
+
         function verificarSenha() {
             const senhaInserida = document.getElementById('input-senha').value.trim();
             const senhaCorreta = "ORCAMETRO2026";
             const erroLabel = document.getElementById('erro-senha');
 
             if (senhaInserida === senhaCorreta) {
+                // Grava na memória para nunca mais pedir ao atualizar a página
+                localStorage.setItem('orcametro_acesso_valido', 'true');
+                
                 document.getElementById('lockscreen').classList.add('hidden');
                 document.getElementById('app-content').classList.remove('hidden');
             } else {
                 erroLabel.classList.remove('hidden');
                 document.getElementById('input-senha').value = "";
                 document.getElementById('input-senha').focus();
+            }
+        }
+
+        // FUNÇÃO DO BOTÃO "SAIR"
+        function fazerLogout() {
+            if(confirm("Deseja mesmo fechar sua sessão e bloquear o OrçaMetro?")) {
+                localStorage.removeItem('orcametro_acesso_valido'); // Apaga o login da memória
+                window.location.reload(); // Recarrega para voltar à tela de bloqueio
             }
         }
 
@@ -314,18 +355,6 @@
                 { nome: "Adesivo Recortado (Custo)", preco: 65 }
             ]
         };
-
-        window.onload = function() {
-            if (!localStorage.getItem('orcametro_config_v3_db')) {
-                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(configPadrao));
-            }
-            if (!localStorage.getItem('orcametro_historico_v3_db')) {
-                localStorage.setItem('orcametro_historico_v3_db', JSON.stringify([]));
-            }
-            carregarConfiguracoes();
-            renderHistorico();
-            document.getElementById('input-senha').focus();
-        }
 
         function carregarConfiguracoes() {
             const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
