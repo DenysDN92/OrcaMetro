@@ -13,6 +13,9 @@
     <!-- Ícones FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Supabase CDN (Conexão Nuvem) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -105,7 +108,7 @@
                         <i class="fa-solid fa-scroll text-xs"></i>
                     </span>
                     <select id="servico-material" class="w-full bg-black/40 border border-gray-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white focus:outline-none focus:border-accentYellow transition-all appearance-none">
-                        <!-- Dinâmico -->
+                        <!-- Dinâmico via JS -->
                     </select>
                     <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-500">
                         <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -239,7 +242,7 @@
             </div>
         </section>
 
-        <!-- NOVO: Configurações Personalizadas do Grau de Dificuldade -->
+        <!-- Configurações Personalizadas do Grau de Dificuldade -->
         <section class="glass-card p-5 rounded-3xl space-y-4">
             <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-sliders mr-1.5 text-accentYellow"></i>Fatores de Grau de Instalação (%)</h2>
             <p class="text-[10px] text-gray-400 -mt-2">Escolha a porcentagem adicional cobrada conforme a dificuldade:</p>
@@ -289,7 +292,7 @@
         </button>
     </main>
 
-    <!-- RODAPÉ ATUALIZADO DE PROPRIEDADE INTELECTUAL -->
+    <!-- RODAPÉ DE PROPRIEDADE INTELECTUAL -->
     <footer class="mt-12 text-center text-[10px] text-gray-400/80 max-w-md mx-auto px-5">
         <p>OrçaMetro é propriedade intelectual de DN SOLUÇÕES.</p>
         <p class="mt-1 text-accentYellow font-semibold tracking-wide">Licença Comercial MVP Ativa</p>
@@ -299,26 +302,34 @@
     <!-- MOTOR LOGIC JAVASCRIPT COMPLETADO E REVISADO   -->
     <!-- ============================================== -->
     <script>
+        // Inicialização do Supabase
+        const SUPABASE_URL = 'https://ezxehftahskaoiahkils.supabase.co';
+        const SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON_AQUI'; // Insira sua anon public key do Supabase aqui
+        const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
         let tipoFatorAtual = 'facil';
         let valorCalculado = 0.0;
         let areaCalculada = 0.0;
         let lucroCalculado = 0.0;
         let freteCalculado = 0.0;
 
-        // Configurações Padrão com Materiais em Branco conforme solicitado
         const configPadrao = {
-            empresa: "Seu nome",
+            empresa: "DN SOLUÇÕES",
             taxaBase: 25,
             validade: 3,
             whatsapp: "11939386682",
             margemLucro: 100,
             valorKm: 1.50,
             fatoresDificuldade: {
-                facil: 0,     // 0% de acréscimo
-                medio: 40,    // 40% de acréscimo
-                dificil: 80   // 80% de acréscimo
+                facil: 0,
+                medio: 40,
+                dificil: 80
             },
-            materiais: []
+            materiais: [
+                { id: '1', nome: 'Adesivo Vinil Brilho', custo: 35.00 },
+                { id: '2', nome: 'Adesivo Fosco Premium', custo: 42.00 },
+                { id: '3', nome: 'Adesivo Perfurado', custo: 48.00 }
+            ]
         };
 
         window.onload = function() {
@@ -329,7 +340,6 @@
                 localStorage.setItem('orcametro_historico_v3_db', JSON.stringify([]));
             }
 
-            // Detector do Status Online / Offline para PWA
             window.addEventListener('online', atualizarStatusRede);
             window.addEventListener('offline', atualizarStatusRede);
             atualizarStatusRede();
@@ -349,251 +359,251 @@
             }
         }
 
-        function carregarConfiguracoes() {
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
-            
-            // Garantia de fallback para novas variáveis
-            if(config.valorKm === undefined) config.valorKm = 1.50;
-            if(!config.fatoresDificuldade) {
-                config.fatoresDificuldade = { facil: 0, medio: 40, dificil: 80 };
+        function switchTab(tab) {
+            document.getElementById('view-orcamento').classList.add('hidden');
+            document.getElementById('view-historico').classList.add('hidden');
+            document.getElementById('view-configurar').classList.add('hidden');
+
+            document.getElementById('tab-orcamento').className = "flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 text-gray-400 hover:text-white";
+            document.getElementById('tab-historico').className = "flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 text-gray-400 hover:text-white";
+            document.getElementById('tab-configurar').className = "flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 text-gray-400 hover:text-white";
+
+            if (tab === 'orcamento') {
+                document.getElementById('view-orcamento').classList.remove('hidden');
+                document.getElementById('tab-orcamento').className = "flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 bg-accentYellow text-darkBg shadow-md";
+            } else if (tab === 'historico') {
+                document.getElementById('view-historico').classList.remove('hidden');
+                document.getElementById('tab-historico').className = "flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 bg-accentYellow text-darkBg shadow-md";
+                renderHistorico();
+            } else if (tab === 'configurar') {
+                document.getElementById('view-configurar').classList.remove('hidden');
+                document.getElementById('tab-configurar').className = "flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 bg-accentYellow text-darkBg shadow-md";
             }
+        }
+
+        function carregarConfiguracoes() {
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+            
+            if(config.valorKm === undefined) config.valorKm = 1.50;
+            if(!config.fatoresDificuldade) config.fatoresDificuldade = { facil: 0, medio: 40, dificil: 80 };
 
             document.getElementById('cfg-empresa').value = config.empresa || "";
-            document.getElementById('cfg-taxabase').value = config.taxaBase;
-            document.getElementById('cfg-validade').value = config.validade;
-            document.getElementById('cfg-whatsapp').value = config.whatsapp;
-            document.getElementById('cfg-margem').value = config.margemLucro;
-            document.getElementById('cfg-valorkm').value = config.valorKm;
+            document.getElementById('cfg-margem').value = config.margemLucro || 100;
+            document.getElementById('cfg-valorkm').value = config.valorKm || 1.50;
+            document.getElementById('cfg-taxabase').value = config.taxaBase || 25;
+            document.getElementById('cfg-validade').value = config.validade || 3;
+            document.getElementById('cfg-whatsapp').value = config.whatsapp || "";
 
-            // Carrega a porcentagem das dificuldades nas configs
             document.getElementById('cfg-fator-facil').value = config.fatoresDificuldade.facil;
             document.getElementById('cfg-fator-medio').value = config.fatoresDificuldade.medio;
             document.getElementById('cfg-fator-dificil').value = config.fatoresDificuldade.dificil;
 
-            // Atualiza os rótulos dos botões na aba de Orçamento
             document.getElementById('lbl-fator-facil').innerText = `+${config.fatoresDificuldade.facil}%`;
             document.getElementById('lbl-fator-medio').innerText = `+${config.fatoresDificuldade.medio}%`;
             document.getElementById('lbl-fator-dificil').innerText = `+${config.fatoresDificuldade.dificil}%`;
 
-            // Popula o Select de Materiais
+            renderSelectMateriais(config.materiais);
+            renderConfigMateriais(config.materiais);
+        }
+
+        function renderSelectMateriais(materiais) {
             const select = document.getElementById('servico-material');
             select.innerHTML = '';
             
-            const listaMateriais = config.materiais || config.materials || [];
-            if (listaMateriais.length === 0) {
-                select.innerHTML = `<option value="">Nenhum material cadastrado</option>`;
-            } else {
-                listaMateriais.forEach((mat, i) => {
-                    select.innerHTML += `<option value="${i}">${mat.nome}</option>`;
-                });
-            }
-
-            renderListaMateriaisConfig();
-        }
-
-        function renderListaMateriaisConfig() {
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
-            const container = document.getElementById('lista-materials-config');
-            if(!container) return;
-            container.innerHTML = '';
-
-            const listaMateriais = config.materiais || config.materials || [];
-            if (listaMateriais.length === 0) {
-                container.innerHTML = `<div class="text-center p-3 text-xs text-gray-500">Nenhum material cadastrado ainda.</div>`;
+            if (!materiais || materiais.length === 0) {
+                select.innerHTML = '<option value="">Nenhum material cadastrado</option>';
                 return;
             }
 
-            listaMateriais.forEach((mat, i) => {
-                container.innerHTML += `
-                    <div class="flex items-center gap-2 bg-black/20 p-2 rounded-xl border border-gray-800/40">
-                        <span class="text-xs flex-1 truncate">${mat.nome}</span>
-                        <span class="text-xs font-bold text-accentYellow font-outfit">R$ ${mat.preco}/m²</span>
-                        <button onclick="removerMaterial(${i})" class="text-red-400 hover:text-red-300 px-2"><i class="fa-solid fa-trash-can text-xs"></i></button>
-                    </div>
-                `;
+            materiais.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.custo;
+                opt.innerText = `${m.nome} (Custo: R$ ${parseFloat(m.custo).toFixed(2)}/m²)`;
+                select.appendChild(opt);
             });
         }
 
-        function adicionarMaterialNovo() {
-            const nome = document.getElementById('add-material-nome').value.trim();
-            const preco = parseFloat(document.getElementById('add-material-preco').value);
-            if(!nome || isNaN(preco) || preco <= 0) return alert("Insira um nome e um custo válidos para o material!");
+        function renderConfigMateriais(materiais) {
+            const container = document.getElementById('lista-materials-config');
+            container.innerHTML = '';
 
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
-            if (!config.materiais) config.materiais = [];
+            if (!materiais || materiais.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-500 italic">Nenhum material cadastrado.</p>';
+                return;
+            }
+
+            materiais.forEach((m, idx) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center gap-2 bg-black/30 p-2 rounded-xl border border-gray-800";
+                div.innerHTML = `
+                    <span class="flex-1 text-xs text-white font-semibold">${m.nome}</span>
+                    <span class="text-xs text-amber-500 font-bold">R$ ${parseFloat(m.custo).toFixed(2)}/m²</span>
+                    <button onclick="removerMaterial(${idx})" class="text-red-400 hover:text-red-300 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function setFatorTipo(tipo) {
+            tipoFatorAtual = tipo;
+            const btns = ['facil', 'medio', 'dificil'];
+            btns.forEach(b => {
+                const el = document.getElementById(`btn-fator-${b}`);
+                if (b === tipo) {
+                    el.className = "fator-btn py-3.5 px-2 rounded-2xl border border-accentYellow bg-accentYellow text-darkBg font-bold transition-all flex flex-col items-center";
+                } else {
+                    el.className = "fator-btn py-3.5 px-2 rounded-2xl border border-gray-800 bg-black/30 text-gray-400 font-bold transition-all flex flex-col items-center hover:border-gray-700";
+                }
+            });
+        }
+
+        function calcularOrcamento() {
+            const largura = parseFloat(document.getElementById('medida-largura').value) || 0;
+            const altura = parseFloat(document.getElementById('medida-altura').value) || 0;
+            const distancia = parseFloat(document.getElementById('medida-distancia').value) || 0;
+            const custoMaterialM2 = parseFloat(document.getElementById('servico-material').value) || 0;
+
+            if (largura <= 0 || altura <= 0) {
+                alert("Por favor, preencha a Largura e a Altura com valores válidos!");
+                return;
+            }
+
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
             
-            config.materiais.push({ nome, preco });
+            areaCalculada = largura * altura;
+            const custoBaseMaterial = areaCalculada * custoMaterialM2;
+            freteCalculado = distancia * (config.valorKm || 1.50);
+            
+            const fatorPct = config.fatoresDificuldade[tipoFatorAtual] || 0;
+            const taxaBaseInstalacao = config.taxaBase || 25;
+            const adicionalDificuldade = taxaBaseInstalacao * (fatorPct / 100);
+            const custoInstalacaoFinal = taxaBaseInstalacao + adicionalDificuldade;
+
+            const custoTotalProducao = custoBaseMaterial + freteCalculado + custoInstalacaoFinal;
+            
+            const margemPct = config.margemLucro || 100;
+            lucroCalculado = custoTotalProducao * (margemPct / 100);
+            valorCalculado = custoTotalProducao + lucroCalculado;
+
+            document.getElementById('resultado-valor').innerText = `R$ ${valorCalculado.toFixed(2).replace('.', ',')}`;
+            document.getElementById('resultado-area').innerText = `${areaCalculada.toFixed(2).replace('.', ',')}m²`;
+            document.getElementById('resultado-frete').innerText = `R$ ${freteCalculado.toFixed(2).replace('.', ',')}`;
+            document.getElementById('resultado-lucro').innerText = `R$ ${lucroCalculado.toFixed(2).replace('.', ',')} (${margemPct}%)`;
+
+            salvarNoHistorico({
+                cliente: document.getElementById('cliente-nome').value || "Cliente Sem Nome",
+                valor: valorCalculado,
+                area: areaCalculada,
+                data: new Date().toLocaleDateString('pt-BR')
+            });
+        }
+
+        function salvarNoHistorico(item) {
+            let hist = JSON.parse(localStorage.getItem('orcametro_historico_v3_db')) || [];
+            hist.unshift(item);
+            if (hist.length > 10) hist.pop();
+            localStorage.setItem('orcametro_historico_v3_db', JSON.stringify(hist));
+        }
+
+        function renderHistorico() {
+            const hist = JSON.parse(localStorage.getItem('orcametro_historico_v3_db')) || [];
+            const container = document.getElementById('lista-historico');
+            container.innerHTML = '';
+
+            if (hist.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">Nenhum orçamento realizado ainda.</p>';
+                return;
+            }
+
+            hist.forEach(h => {
+                const div = document.createElement('div');
+                div.className = "glass-card p-4 rounded-2xl flex justify-between items-center";
+                div.innerHTML = `
+                    <div>
+                        <h4 class="text-xs font-bold text-white">${h.cliente}</h4>
+                        <p class="text-[10px] text-gray-400">${h.data} • ${h.area.toFixed(2)}m²</p>
+                    </div>
+                    <span class="text-sm font-extrabold text-accentYellow">R$ ${parseFloat(h.valor).toFixed(2).replace('.', ',')}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function limparHistorico() {
+            if (confirm("Deseja apagar todo o histórico de cálculos?")) {
+                localStorage.setItem('orcametro_historico_v3_db', JSON.stringify([]));
+                renderHistorico();
+            }
+        }
+
+        function adicionarMaterialNovo() {
+            const nomeInput = document.getElementById('add-material-nome');
+            const precoInput = document.getElementById('add-material-preco');
+
+            const nome = nomeInput.value.trim();
+            const custo = parseFloat(precoInput.value);
+
+            if (!nome || isNaN(custo) || custo <= 0) {
+                alert("Preencha o nome e o custo do material corretamente!");
+                return;
+            }
+
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+            config.materiais.push({ id: Date.now().toString(), nome: nome, custo: custo });
+            
             localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
             
-            document.getElementById('add-material-nome').value = '';
-            document.getElementById('add-material-preco').value = '';
+            nomeInput.value = '';
+            precoInput.value = '';
             carregarConfiguracoes();
         }
 
         function removerMaterial(index) {
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
             config.materiais.splice(index, 1);
             localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
             carregarConfiguracoes();
         }
 
         function salvarConfiguracoes() {
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
-            config.empresa = document.getElementById('cfg-empresa').value.trim() || "Seu nome";
-            config.taxaBase = parseFloat(document.getElementById('cfg-taxabase').value) || 0;
-            config.validade = parseInt(document.getElementById('cfg-validade').value) || 3;
-            config.whatsapp = document.getElementById('cfg-whatsapp').value.trim();
-            config.margemLucro = parseFloat(document.getElementById('cfg-margem').value) || 0;
-            config.valorKm = parseFloat(document.getElementById('cfg-valorkm').value) || 0;
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
 
-            // Salva as porcentagens customizadas de dificuldade
+            config.empresa = document.getElementById('cfg-empresa').value;
+            config.margemLucro = parseFloat(document.getElementById('cfg-margem').value) || 100;
+            config.valorKm = parseFloat(document.getElementById('cfg-valorkm').value) || 1.50;
+            config.taxaBase = parseFloat(document.getElementById('cfg-taxabase').value) || 25;
+            config.validade = parseInt(document.getElementById('cfg-validade').value) || 3;
+            config.whatsapp = document.getElementById('cfg-whatsapp').value;
+
             config.fatoresDificuldade = {
                 facil: parseFloat(document.getElementById('cfg-fator-facil').value) || 0,
-                medio: parseFloat(document.getElementById('cfg-fator-medio').value) || 0,
-                dificil: parseFloat(document.getElementById('cfg-fator-dificil').value) || 0
+                medio: parseFloat(document.getElementById('cfg-fator-medio').value) || 40,
+                dificil: parseFloat(document.getElementById('cfg-fator-dificil').value) || 80
             };
 
             localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-            alert("Parâmetros operacionais atualizados com sucesso!");
+            alert("Parâmetros salvos com sucesso!");
             carregarConfiguracoes();
-            switchTab('orcamento');
-        }
-
-        function setFatorTipo(tipo) {
-            tipoFatorAtual = tipo;
-            document.querySelectorAll('.fator-btn').forEach(b => {
-                b.classList.remove('fator-btn-active');
-                b.classList.add('bg-black/30', 'text-gray-400', 'border-gray-800');
-            });
-            const btnActive = document.getElementById(`btn-fator-${tipo}`);
-            btnActive.classList.add('fator-btn-active');
-            btnActive.classList.remove('bg-black/30', 'text-gray-400', 'border-gray-800');
-        }
-
-        function switchTab(tab) {
-            ['orcamento', 'historico', 'configurar'].forEach(t => {
-                document.getElementById(`view-${t}`).classList.add('hidden');
-                document.getElementById(`tab-${t}`).classList.remove('bg-accentYellow', 'text-darkBg', 'shadow-md');
-                document.getElementById(`tab-${t}`).classList.add('text-gray-400');
-            });
-            document.getElementById(`view-${tab}`).classList.remove('hidden');
-            document.getElementById(`tab-${tab}`).classList.add('bg-accentYellow', 'text-darkBg', 'shadow-md');
-            document.getElementById(`tab-${tab}`).classList.remove('text-gray-400');
-        }
-
-        function calcularOrcamento() {
-            const larg = parseFloat(document.getElementById('medida-largura').value) || 0;
-            const alt = parseFloat(document.getElementById('medida-altura').value) || 0;
-            const km = parseFloat(document.getElementById('medida-distancia').value) || 0;
-
-            if(larg <= 0 || alt <= 0) return alert("Insira as dimensões de largura e altura!");
-
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
-            const indexMat = document.getElementById('servico-material').value;
-
-            if(indexMat === "" || !config.materiais || config.materiais.length === 0) {
-                return alert("Por favor, adicione e selecione ao menos um material na aba Configurar!");
-            }
-
-            const mat = config.materiais[indexMat];
-
-            areaCalculada = larg * alt;
-            freteCalculado = km * config.valorKm;
-
-            // Busca a porcentagem configurada para a dificuldade escolhida
-            const pctDificuldade = config.fatoresDificuldade[tipoFatorAtual] || 0;
-            const fatorMultiplicador = 1 + (pctDificuldade / 100);
-
-            let custoMaterialBruto = areaCalculada * mat.preco;
-            let custoComInstalacao = (custoMaterialBruto + config.taxaBase) * fatorMultiplicador;
-            
-            valorCalculado = (custoComInstalacao * (1 + (config.margemLucro / 100))) + freteCalculado;
-            lucroCalculado = valorCalculado - (custoMaterialBruto + freteCalculado);
-
-            document.getElementById('resultado-valor').innerText = "R$ " + valorCalculado.toFixed(2).replace('.', ',');
-            document.getElementById('resultado-area').innerText = areaCalculada.toFixed(2).replace('.', ',') + "m²";
-            document.getElementById('resultado-frete').innerText = "R$ " + freteCalculado.toFixed(2).replace('.', ',');
-            document.getElementById('resultado-lucro').innerText = `R$ ${lucroCalculado.toFixed(2).replace('.', ',')} (${config.margemLucro}%)`;
-
-            salvarNoHistorico(mat.nome, areaCalculada, valorCalculado);
-        }
-
-        function salvarNoHistorico(materialNome, area, total) {
-            const historico = JSON.parse(localStorage.getItem('orcametro_historico_v3_db')) || [];
-            const cliente = document.getElementById('cliente-nome').value.trim() || "Seu nome";
-            
-            const novoItem = {
-                data: new Date().toLocaleDateString('pt-BR'),
-                cliente,
-                materialNome,
-                area,
-                total
-            };
-
-            historico.unshift(novoItem);
-            if(historico.length > 20) historico.pop();
-            localStorage.setItem('orcametro_historico_v3_db', JSON.stringify(historico));
-            renderHistorico();
-        }
-
-        function renderHistorico() {
-            const historico = JSON.parse(localStorage.getItem('orcametro_historico_v3_db')) || [];
-            const container = document.getElementById('lista-historico');
-            if(!container) return;
-            container.innerHTML = '';
-
-            if(historico.length === 0) {
-                container.innerHTML = `<div class="text-center p-6 text-xs text-gray-500">Nenhum cálculo recente encontrado.</div>`;
-                return;
-            }
-
-            historico.forEach(item => {
-                container.innerHTML += `
-                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center border border-gray-800/40">
-                        <div>
-                            <h4 class="text-xs font-bold text-white">${item.cliente}</h4>
-                            <p class="text-[10px] text-gray-400 mt-0.5">${item.materialNome} • ${item.area.toFixed(2)}m²</p>
-                            <span class="text-[9px] text-gray-500 block mt-1">${item.data}</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-xs font-extrabold text-accentYellow font-outfit">R$ ${item.total.toFixed(2).replace('.', ',')}</span>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function limparHistorico() {
-            if(confirm("Deseja apagar o histórico de cálculos?")) {
-                localStorage.setItem('orcametro_historico_v3_db', JSON.stringify([]));
-                renderHistorico();
-            }
         }
 
         function enviarWhatsApp() {
-            if(valorCalculado <= 0) return alert("Efetue o cálculo antes de disparar o WhatsApp.");
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db'));
-            const num = config.whatsapp.replace(/\D/g,'');
-            
-            const cliente = document.getElementById('cliente-nome').value.trim() || "Cliente";
-            const indexMat = document.getElementById('servico-material').value;
-            let matNome = config.materiais[indexMat] ? config.materiais[indexMat].nome : "Serviço";
+            if (valorCalculado <= 0) {
+                alert("Realize um cálculo primeiro antes de enviar o orçamento!");
+                return;
+            }
 
-            matNome = matNome.replace(/\s*\(custo\)/i, '');
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+            const cliente = document.getElementById('cliente-nome').value || "Cliente";
+            const numWhats = config.whatsapp ? config.whatsapp.replace(/\D/g, '') : "11939386682";
 
-            const larg = parseFloat(document.getElementById('medida-largura').value).toFixed(2).replace('.', ',');
-            const alt = parseFloat(document.getElementById('medida-altura').value).toFixed(2).replace('.', ',');
-            const areaStr = areaCalculada.toFixed(2).replace('.', ',');
-            const totalStr = valorCalculado.toFixed(2).replace('.', ',');
+            const texto = `Olá *${cliente}*, segue o orçamento solicitado pela *${config.empresa}*:\n\n` +
+                          `📐 *Área Total:* ${areaCalculada.toFixed(2).replace('.', ',')} m²\n` +
+                          `💰 *Valor Total:* R$ ${valorCalculado.toFixed(2).replace('.', ',')}\n` +
+                          `⏱️ *Validade:* ${config.validade} dias\n\n` +
+                          `Qualquer dúvida estarei à disposição!`;
 
-            const msg = `Olá, ${cliente}! Segue o seu orçamento solicitado: 📋\n\n` +
-                        `📏 *Serviço*: ${matNome}\n` +
-                        `📐 *Medidas*: ${larg}m x ${alt}m (Área: ${areaStr}m²)\n\n` +
-                        `💰 *Valor Total (com entrega/instalação)*: R$ ${totalStr}\n\n` +
-                        `*Orçamento válido por ${config.validade} dias.*\n\n` +
-                        `Para aprovar ou tirar dúvidas, é só responder por aqui! 🤝`;
-            
-            window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`, '_blank');
+            const url = `https://wa.me/55${numWhats}?text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
         }
     </script>
 </body>
