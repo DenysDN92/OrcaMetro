@@ -58,7 +58,7 @@
 </head>
 <body class="min-h-screen pb-16 font-sans antialiased">
 
-    <!-- ==================== OVERLAY DE AUTENTICAÇÃO E BLOQUEIO ==================== -->
+    <!-- ==================== OVERLAY DE AUTENTICAÇÃO ==================== -->
     <div id="auth-modal" class="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/98 p-4 backdrop-blur-md">
         <div class="glass-card w-full max-w-sm rounded-3xl p-6 sm:p-8 text-center shadow-2xl border border-slate-800">
             <div class="mb-4 flex items-center justify-center gap-2">
@@ -91,6 +91,24 @@
         </div>
     </div>
 
+    <!-- ==================== BLOQUEIO DE ASSINATURA INATIVA ==================== -->
+    <div id="paywall-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-slate-950/95 p-4 backdrop-blur-md">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 text-center shadow-2xl border border-amber-500/30">
+            <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4 text-amber-500 text-2xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-white font-outfit mb-2">Assinatura Necessária</h3>
+            <p class="text-xs text-slate-400 mb-6 leading-relaxed">
+                Sua conta está registrada, mas a assinatura ainda não foi ativada. Assine agora para ter acesso ilimitado.
+            </p>
+            <a id="btn-comprar-kiwify" href="https://kiwify.com.br" target="_blank" 
+               class="block w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-2xl shadow-lg text-sm tracking-wide transition-all uppercase mb-3">
+                <i class="fa-solid fa-crown mr-2"></i>Ativar Assinatura
+            </a>
+            <button onclick="fazerLogout()" class="text-xs text-slate-500 hover:text-slate-300 font-semibold">Sair da conta</button>
+        </div>
+    </div>
+
     <!-- ==================== HEADER DO APP ==================== -->
     <header class="p-6 max-w-md mx-auto flex items-center justify-between border-b border-gray-900/80">
         <div class="flex items-center gap-3">
@@ -112,7 +130,7 @@
         </div>
     </header>
 
-    <!-- ==================== MENU DE ABAS DE NAVEGAÇÃO ==================== -->
+    <!-- ==================== MENU DE ABAS ==================== -->
     <nav class="max-w-md mx-auto px-5 mt-6">
         <div class="bg-black/40 p-1.5 rounded-2xl flex gap-1 border border-gray-800/60">
             <button id="tab-orcamento" onclick="switchTab('orcamento')" class="flex-1 py-3 text-xs font-bold rounded-xl transition-all duration-300 bg-accentYellow text-darkBg shadow-md">
@@ -127,9 +145,7 @@
         </div>
     </nav>
 
-    <!-- ============================================== -->
-    <!-- ABA 1: NOVO ORÇAMENTO                          -->
-    <!-- ============================================== -->
+    <!-- ABA 1: NOVO ORÇAMENTO -->
     <main id="view-orcamento" class="max-w-md mx-auto px-5 mt-6 space-y-5">
         <section class="glass-card p-5 rounded-3xl space-y-4 shadow-xl">
             <div>
@@ -229,9 +245,7 @@
         </section>
     </main>
 
-    <!-- ============================================== -->
-    <!-- ABA 2: HISTÓRICO DE ORÇAMENTOS                 -->
-    <!-- ============================================== -->
+    <!-- ABA 2: HISTÓRICO -->
     <main id="view-historico" class="max-w-md mx-auto px-5 mt-6 space-y-4 hidden">
         <div class="flex items-center justify-between mb-2">
             <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-list-check mr-1.5 text-accentYellow"></i>Últimos Cálculos</h2>
@@ -242,9 +256,7 @@
         <div id="lista-historico" class="space-y-3"></div>
     </main>
 
-    <!-- ============================================== -->
-    <!-- ABA 3: CONFIGURAR PARÂMETROS                   -->
-    <!-- ============================================== -->
+    <!-- ABA 3: CONFIGURAR -->
     <main id="view-configurar" class="max-w-md mx-auto px-5 mt-6 space-y-5 hidden">
         <section class="glass-card p-5 rounded-3xl space-y-4">
             <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-building mr-1.5 text-accentYellow"></i>Identidade da Oficina</h2>
@@ -272,7 +284,6 @@
 
         <section class="glass-card p-5 rounded-3xl space-y-4">
             <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-sliders mr-1.5 text-accentYellow"></i>Fatores de Grau de Instalação (%)</h2>
-            <p class="text-[10px] text-gray-400 -mt-2">Escolha a porcentagem adicional cobrada conforme a dificuldade:</p>
             <div class="grid grid-cols-3 gap-3">
                 <div>
                     <label class="block text-[10px] font-semibold text-gray-400 mb-1 text-center">Fácil (%)</label>
@@ -325,24 +336,23 @@
     </footer>
 
     <!-- ============================================== -->
-    <!-- MOTOR JAVASCRIPT UNIFICADO E CORRIGIDO          -->
+    <!-- JAVASCRIPT INTEGRADO AO SUPABASE & LOCK ENGINE -->
     <!-- ============================================== -->
     <script>
-        // 🔑 CONFIGURAÇÃO DO SUPABASE (Sintaxe e Aspas Corrigidas)
         const SUPABASE_URL = 'https://vjjzshpxohuspwjtkvbc.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_0yfXOWXYi2xDKNz7EHAb7w_8naps5-7';
 
         let supabaseClient = null;
-        
+        let currentUser = null;
+
         try {
             if (typeof supabase !== 'undefined') {
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
         } catch (e) {
-            console.error("Erro ao inicializar Supabase:", e);
+            console.error("Erro Supabase:", e);
         }
 
-        // Variáveis Globais da Calculadora
         let tipoFatorAtual = 'facil';
         let valorCalculado = 0.0;
         let areaCalculada = 0.0;
@@ -356,11 +366,7 @@
             whatsapp: "11939386682",
             margemLucro: 100,
             valorKm: 1.50,
-            fatoresDificuldade: {
-                facil: 0,
-                medio: 40,
-                dificil: 80
-            },
+            fatoresDificuldade: { facil: 0, medio: 40, dificil: 80 },
             materiais: [
                 { id: '1', nome: 'Adesivo Vinil Brilho', custo: 35.00 },
                 { id: '2', nome: 'Adesivo Fosco Premium', custo: 42.00 },
@@ -368,29 +374,21 @@
             ]
         };
 
-        // DOM Loaded
         document.addEventListener('DOMContentLoaded', () => {
-            // Setup de Autenticação Supabase
             setupAuth();
 
-            // LocalStorage Defaults
             if (!localStorage.getItem('orcametro_config_v3_db')) {
                 localStorage.setItem('orcametro_config_v3_db', JSON.stringify(configPadrao));
             }
-            if (!localStorage.getItem('orcametro_historico_v3_db')) {
-                localStorage.setItem('orcametro_historico_v3_db', JSON.stringify([]));
-            }
 
-            // Monitor de Conexão
             window.addEventListener('online', atualizarStatusRede);
             window.addEventListener('offline', atualizarStatusRede);
             atualizarStatusRede();
 
             carregarConfiguracoes();
-            renderHistorico();
         });
 
-        // LÓGICA DE AUTENTICAÇÃO
+        // AUTENTICAÇÃO E CHECAGEM DE ASSINATURA
         function setupAuth() {
             const btnEntrar = document.getElementById('btn-entrar');
             const btnCadastrar = document.getElementById('btn-cadastrar');
@@ -402,31 +400,54 @@
 
             if (supabaseClient) {
                 supabaseClient.auth.getSession().then(({ data: { session } }) => {
-                    atualizarSessaoUI(session);
-                }).catch(err => console.log('Verificando acesso...'));
+                    tratarSessao(session);
+                });
 
                 supabaseClient.auth.onAuthStateChange((_event, session) => {
-                    atualizarSessaoUI(session);
+                    tratarSessao(session);
                 });
             }
         }
 
-        function atualizarSessaoUI(session) {
+        async function tratarSessao(session) {
             const authModal = document.getElementById('auth-modal');
+            const paywallModal = document.getElementById('paywall-modal');
             const btnLogout = document.getElementById('btn-logout');
-            if (session) {
-                if (authModal) authModal.style.display = 'none';
-                if (btnLogout) btnLogout.classList.remove('hidden');
-            } else {
+
+            if (!session) {
+                currentUser = null;
                 if (authModal) authModal.style.display = 'flex';
+                if (paywallModal) paywallModal.classList.add('hidden');
                 if (btnLogout) btnLogout.classList.add('hidden');
+                return;
+            }
+
+            currentUser = session.user;
+            if (authModal) authModal.style.display = 'none';
+            if (btnLogout) btnLogout.classList.remove('hidden');
+
+            // Verificar Status da Assinatura no Banco de Dados
+            const { data: perfil, error } = await supabaseClient
+                .from('perfis')
+                .select('status_assinatura')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (error || !perfil || perfil.status_assinatura !== 'ativo') {
+                // TRAVA ATIVADA: Assinatura inativa
+                if (paywallModal) paywallModal.classList.remove('hidden');
+            } else {
+                // ASSINANTE ATIVO: Libera o sistema
+                if (paywallModal) paywallModal.classList.add('hidden');
+                carregarMateriaisDoBanco();
+                renderHistorico();
             }
         }
 
         async function fazerLogin() {
             const msg = document.getElementById('auth-msg');
             msg.style.color = '#38bdf8';
-            msg.innerText = 'Verificando dados...';
+            msg.innerText = 'Entrando...';
 
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value.trim();
@@ -434,12 +455,6 @@
             if (!email || !password) {
                 msg.style.color = '#f43f5e';
                 msg.innerText = 'Preencha e-mail e senha.';
-                return;
-            }
-
-            if (!supabaseClient) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = 'Erro na conexão com Supabase.';
                 return;
             }
 
@@ -469,13 +484,7 @@
 
             if (password.length < 6) {
                 msg.style.color = '#f43f5e';
-                msg.innerText = 'A senha precisa ter no mínimo 6 dígitos.';
-                return;
-            }
-
-            if (!supabaseClient) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = 'Erro na conexão com Supabase.';
+                msg.innerText = 'Senha mínima: 6 caracteres.';
                 return;
             }
 
@@ -483,9 +492,6 @@
             if (error) {
                 msg.style.color = '#f43f5e';
                 msg.innerText = 'Erro: ' + error.message;
-            } else if (data.user && data.session === null) {
-                msg.style.color = '#10b981';
-                msg.innerText = 'Conta criada! Verifique seu e-mail para confirmar a conta.';
             } else {
                 msg.style.color = '#10b981';
                 msg.innerText = 'Conta criada com sucesso!';
@@ -493,13 +499,11 @@
         }
 
         async function fazerLogout() {
-            if (supabaseClient) {
-                await supabaseClient.auth.signOut();
-            }
+            if (supabaseClient) await supabaseClient.auth.signOut();
             document.getElementById('auth-modal').style.display = 'flex';
+            document.getElementById('paywall-modal').classList.add('hidden');
         }
 
-        // REDE
         function atualizarStatusRede() {
             const badge = document.getElementById('badge-status');
             if (navigator.onLine) {
@@ -511,7 +515,6 @@
             }
         }
 
-        // ABAS
         function switchTab(tab) {
             document.getElementById('view-orcamento').classList.add('hidden');
             document.getElementById('view-historico').classList.add('hidden');
@@ -534,12 +537,8 @@
             }
         }
 
-        // CONFIGURAÇÕES & CALCULADORA
         function carregarConfiguracoes() {
             const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
-            
-            if(config.valorKm === undefined) config.valorKm = 1.50;
-            if(!config.fatoresDificuldade) config.fatoresDificuldade = { facil: 0, medio: 40, dificil: 80 };
 
             document.getElementById('cfg-empresa').value = config.empresa || "";
             document.getElementById('cfg-margem').value = config.margemLucro || 100;
@@ -558,6 +557,22 @@
 
             renderSelectMateriais(config.materiais);
             renderConfigMateriais(config.materiais);
+        }
+
+        async function carregarMateriaisDoBanco() {
+            if (!currentUser || !supabaseClient) return;
+            const { data, error } = await supabaseClient
+                .from('materiais')
+                .select('*')
+                .eq('user_id', currentUser.id);
+
+            if (!error && data && data.length > 0) {
+                const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+                config.materiais = data;
+                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
+                renderSelectMateriais(data);
+                renderConfigMateriais(data);
+            }
         }
 
         function renderSelectMateriais(materiais) {
@@ -592,7 +607,7 @@
                 div.innerHTML = `
                     <span class="flex-1 text-xs text-white font-semibold">${m.nome}</span>
                     <span class="text-xs text-amber-500 font-bold">R$ ${parseFloat(m.custo).toFixed(2)}/m²</span>
-                    <button onclick="removerMaterial(${idx})" class="text-red-400 hover:text-red-300 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                    <button onclick="removerMaterial(${idx}, '${m.id}')" class="text-red-400 hover:text-red-300 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
                 `;
                 container.appendChild(div);
             });
@@ -600,8 +615,7 @@
 
         function setFatorTipo(tipo) {
             tipoFatorAtual = tipo;
-            const btns = ['facil', 'medio', 'dificil'];
-            btns.forEach(b => {
+            ['facil', 'medio', 'dificil'].forEach(b => {
                 const el = document.getElementById(`btn-fator-${b}`);
                 if (b === tipo) {
                     el.className = "fator-btn py-3.5 px-2 rounded-2xl border border-accentYellow bg-accentYellow text-darkBg font-bold transition-all flex flex-col items-center";
@@ -611,14 +625,14 @@
             });
         }
 
-        function calcularOrcamento() {
+        async function calcularOrcamento() {
             const largura = parseFloat(document.getElementById('medida-largura').value) || 0;
             const altura = parseFloat(document.getElementById('medida-altura').value) || 0;
             const distancia = parseFloat(document.getElementById('medida-distancia').value) || 0;
             const custoMaterialM2 = parseFloat(document.getElementById('servico-material').value) || 0;
 
             if (largura <= 0 || altura <= 0) {
-                alert("Por favor, preencha a Largura e a Altura com valores válidos!");
+                alert("Preencha a Largura e a Altura com valores válidos!");
                 return;
             }
 
@@ -644,53 +658,62 @@
             document.getElementById('resultado-frete').innerText = `R$ ${freteCalculado.toFixed(2).replace('.', ',')}`;
             document.getElementById('resultado-lucro').innerText = `R$ ${lucroCalculado.toFixed(2).replace('.', ',')} (${margemPct}%)`;
 
-            salvarNoHistorico({
-                cliente: document.getElementById('cliente-nome').value || "Cliente Sem Nome",
-                valor: valorCalculado,
-                area: areaCalculada,
-                data: new Date().toLocaleDateString('pt-BR')
-            });
+            const clienteNome = document.getElementById('cliente-nome').value || "Cliente Sem Nome";
+
+            // Salvar no Banco Supabase
+            if (currentUser && supabaseClient) {
+                await supabaseClient.from('orcamentos').insert([
+                    {
+                        user_id: currentUser.id,
+                        cliente: clienteNome,
+                        valor: valorCalculado,
+                        area: areaCalculada,
+                        lucro_previsto: lucroCalculado
+                    }
+                ]);
+            }
         }
 
-        function salvarNoHistorico(item) {
-            let hist = JSON.parse(localStorage.getItem('orcametro_historico_v3_db')) || [];
-            hist.unshift(item);
-            if (hist.length > 10) hist.pop();
-            localStorage.setItem('orcametro_historico_v3_db', JSON.stringify(hist));
-        }
-
-        function renderHistorico() {
-            const hist = JSON.parse(localStorage.getItem('orcametro_historico_v3_db')) || [];
+        async function renderHistorico() {
             const container = document.getElementById('lista-historico');
             container.innerHTML = '';
 
-            if (hist.length === 0) {
-                container.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">Nenhum orçamento realizado ainda.</p>';
-                return;
-            }
+            if (currentUser && supabaseClient) {
+                const { data: hist } = await supabaseClient
+                    .from('orcamentos')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(10);
 
-            hist.forEach(h => {
-                const div = document.createElement('div');
-                div.className = "glass-card p-4 rounded-2xl flex justify-between items-center";
-                div.innerHTML = `
-                    <div>
-                        <h4 class="text-xs font-bold text-white">${h.cliente}</h4>
-                        <p class="text-[10px] text-gray-400">${h.data} • ${h.area.toFixed(2)}m²</p>
-                    </div>
-                    <span class="text-sm font-extrabold text-accentYellow">R$ ${parseFloat(h.valor).toFixed(2).replace('.', ',')}</span>
-                `;
-                container.appendChild(div);
-            });
+                if (hist && hist.length > 0) {
+                    hist.forEach(h => {
+                        const div = document.createElement('div');
+                        div.className = "glass-card p-4 rounded-2xl flex justify-between items-center";
+                        div.innerHTML = `
+                            <div>
+                                <h4 class="text-xs font-bold text-white">${h.cliente}</h4>
+                                <p class="text-[10px] text-gray-400">${new Date(h.created_at).toLocaleDateString('pt-BR')} • ${parseFloat(h.area).toFixed(2)}m²</p>
+                            </div>
+                            <span class="text-sm font-extrabold text-accentYellow">R$ ${parseFloat(h.valor).toFixed(2).replace('.', ',')}</span>
+                        `;
+                        container.appendChild(div);
+                    });
+                    return;
+                }
+            }
+            container.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">Nenhum orçamento salvo no histórico.</p>';
         }
 
-        function limparHistorico() {
-            if (confirm("Deseja apagar todo o histórico de cálculos?")) {
-                localStorage.setItem('orcametro_historico_v3_db', JSON.stringify([]));
+        async function limparHistorico() {
+            if (confirm("Deseja apagar todo o seu histórico no banco?")) {
+                if (currentUser && supabaseClient) {
+                    await supabaseClient.from('orcamentos').delete().eq('user_id', currentUser.id);
+                }
                 renderHistorico();
             }
         }
 
-        function adicionarMaterialNovo() {
+        async function adicionarMaterialNovo() {
             const nomeInput = document.getElementById('add-material-nome');
             const precoInput = document.getElementById('add-material-preco');
 
@@ -698,25 +721,31 @@
             const custo = parseFloat(precoInput.value);
 
             if (!nome || isNaN(custo) || custo <= 0) {
-                alert("Preencha o nome e o custo do material corretamente!");
+                alert("Preencha o nome e custo do material!");
                 return;
             }
 
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
-            config.materiais.push({ id: Date.now().toString(), nome: nome, custo: custo });
-            
-            localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-            
+            if (currentUser && supabaseClient) {
+                await supabaseClient.from('materiais').insert([
+                    { user_id: currentUser.id, nome: nome, custo: custo }
+                ]);
+                await carregarMateriaisDoBanco();
+            }
+
             nomeInput.value = '';
             precoInput.value = '';
-            carregarConfiguracoes();
         }
 
-        function removerMaterial(index) {
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
-            config.materiais.splice(index, 1);
-            localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-            carregarConfiguracoes();
+        async function removerMaterial(index, materialId) {
+            if (currentUser && supabaseClient && materialId && materialId.length > 10) {
+                await supabaseClient.from('materiais').delete().eq('id', materialId);
+                await carregarMateriaisDoBanco();
+            } else {
+                const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+                config.materiais.splice(index, 1);
+                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
+                carregarConfiguracoes();
+            }
         }
 
         function salvarConfiguracoes() {
@@ -736,13 +765,13 @@
             };
 
             localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-            alert("Parâmetros salvos com sucesso!");
+            alert("Configurações salvas!");
             carregarConfiguracoes();
         }
 
         function enviarWhatsApp() {
             if (valorCalculado <= 0) {
-                alert("Realize um cálculo primeiro antes de enviar o orçamento!");
+                alert("Realize um cálculo antes de enviar!");
                 return;
             }
 
