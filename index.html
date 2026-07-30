@@ -625,62 +625,98 @@
     </script>
 </body>
 </html>
+<!-- 1. CONFIRME QUE ESTA LINHA ESTÁ ACIMA OU NO <head> DO SEU ARQUIVO -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<!-- 2. SCRIPT DE AUTENTICAÇÃO -->
 <script>
-  // Conexão com o Supabase
   const SUPABASE_URL = 'https://vjjzshpxohuspwjtkvbc.supabase.co';
-  const SUPABASE_ANON_KEY = 'COLE_AQUI_SUA_CHAVE_PUBLISHABLE'; 
+  
+  // ⚠️ ATENÇÃO: Cole a sua chave Publishable/Anon REAL entre as aspas abaixo:
+  const SUPABASE_ANON_KEY = sb_publishable_0yfXOWXYi2xDKNz7EHAb7w_8naps5-7
+  let _supabaseClient = null;
 
-  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  function getSupabase() {
+    if (!_supabaseClient) {
+      if (typeof supabase === 'undefined') {
+        throw new Error('A biblioteca do Supabase não foi carregada no site.');
+      }
+      if (SUPABASE_ANON_KEY.includes('COLE_AQUI')) {
+        throw new Error('Você esqueceu de colar a chave do Supabase no código!');
+      }
+      _supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+    return _supabaseClient;
+  }
 
-  // Verificar se o usuário já está logado ao abrir o site
   window.addEventListener('DOMContentLoaded', async () => {
-    const { data: { session } } = await _supabase.auth.getSession();
-    if (session) {
-      document.getElementById('auth-modal').style.display = 'none';
+    try {
+      const client = getSupabase();
+      const { data: { session } } = await client.auth.getSession();
+      if (session) {
+        document.getElementById('auth-modal').style.display = 'none';
+      }
+    } catch (e) {
+      console.log('Aguardando login...');
     }
   });
 
-  // Função de Login
   async function fazerLogin() {
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value;
     const msg = document.getElementById('auth-msg');
     msg.style.color = '#ef4444';
     msg.innerText = 'Verificando...';
 
-    if (!email || !password) {
-      msg.innerText = 'Preencha e-mail e senha.';
-      return;
-    }
+    try {
+      const client = getSupabase();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value.trim();
 
-    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      msg.innerText = 'Erro ao entrar: ' + error.message;
-    } else {
-      document.getElementById('auth-modal').style.display = 'none';
+      if (!email || !password) {
+        msg.innerText = 'Preencha e-mail e senha.';
+        return;
+      }
+
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      if (error) {
+        msg.innerText = 'Erro ao entrar: ' + error.message;
+      } else {
+        document.getElementById('auth-modal').style.display = 'none';
+      }
+    } catch (err) {
+      msg.innerText = err.message;
     }
   }
 
-  // Função de Cadastro
   async function fazerCadastro() {
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value;
     const msg = document.getElementById('auth-msg');
     msg.style.color = '#ef4444';
     msg.innerText = 'Criando conta...';
 
-    if (!email || !password) {
-      msg.innerText = 'Preencha e-mail e senha.';
-      return;
-    }
+    try {
+      const client = getSupabase();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value.trim();
 
-    const { data, error } = await _supabase.auth.signUp({ email, password });
-    if (error) {
-      msg.innerText = 'Erro: ' + error.message;
-    } else {
-      msg.style.color = '#22c55e';
-      msg.innerText = 'Conta criada com sucesso! Você já pode clicar em Entrar.';
+      if (!email || !password) {
+        msg.innerText = 'Preencha e-mail e senha.';
+        return;
+      }
+
+      const { data, error } = await client.auth.signUp({ email, password });
+      if (error) {
+        msg.innerText = 'Erro: ' + error.message;
+      } else if (data.user && data.session === null) {
+        msg.style.color = '#22c55e';
+        msg.innerText = 'Conta criada! Verifique seu e-mail para confirmar a conta antes de entrar.';
+      } else {
+        msg.style.color = '#22c55e';
+        msg.innerText = 'Conta criada com sucesso! Clique em Entrar.';
+      }
+    } catch (err) {
+      msg.innerText = err.message;
     }
   }
 </script>
+
+
+ 
