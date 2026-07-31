@@ -1,22 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<style>
-  @media screen {
-    #area-impressao-pdf { display: none !important; }
-  }
-  @media print {
-    body > *:not(#area-impressao-pdf) { display: none !important; }
-    #area-impressao-pdf { 
-      display: block !important; 
-      width: 100% !important; 
-      background: #ffffff !important; 
-      color: #000000 !important; 
-    }
-    html, body { background: #ffffff !important; color: #000000 !important; margin: 0; padding: 0; }
-  }
-</style>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OrçaMetro - Profissional V3.3</title>
@@ -70,25 +54,23 @@
             color: #0b0f19 !important;
             border-color: #f59e0b !important;
         }
-@media screen {
-  #area-impressao-pdf { display: none !important; }
-}
-@media print {
-  body > *:not(#area-impressao-pdf) { display: none !important; }
-  #area-impressao-pdf { 
-    display: block !important; 
-    width: 100% !important; 
-    background: #ffffff !important; 
-    color: #000000 !important; 
-  }
-  html, body { background: #ffffff !important; color: #000000 !important; margin: 0; padding: 0; }
-}
-
+        @media screen {
+            #area-impressao-pdf { display: none !important; }
+        }
+        @media print {
+            body > *:not(#area-impressao-pdf) { display: none !important; }
+            #area-impressao-pdf { 
+                display: block !important; 
+                width: 100% !important; 
+                background: #ffffff !important; 
+                color: #000000 !important; 
+                padding: 0;
+                margin: 0;
+            }
+            html, body { background: #ffffff !important; color: #000000 !important; margin: 0; padding: 0; }
+        }
     </style>
 </head>
-
-<!-- Biblioteca para gerar PDF (html2pdf) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <body class="min-h-screen pb-16 font-sans antialiased">
 
@@ -211,11 +193,11 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-2">Largura (Metros)</label>
-                    <input type="number" step="0.01" id="medida-largura" placeholder="0,00" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-white text-center text-lg font-bold font-outfit focus:outline-none focus:border-accentYellow transition-all">
+                    <input type="text" id="medida-largura" placeholder="0,00" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-white text-center text-lg font-bold font-outfit focus:outline-none focus:border-accentYellow transition-all">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-2">Altura (Metros)</label>
-                    <input type="number" step="0.01" id="medida-altura" placeholder="0,00" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-white text-center text-lg font-bold font-outfit focus:outline-none focus:border-accentYellow transition-all">
+                    <input type="text" id="medida-altura" placeholder="0,00" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-white text-center text-lg font-bold font-outfit focus:outline-none focus:border-accentYellow transition-all">
                 </div>
             </div>
             <div>
@@ -224,7 +206,7 @@
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-500">
                         <i class="fa-solid fa-route text-xs"></i>
                     </span>
-                    <input type="number" id="medida-distancia" placeholder="Deixe 0 se não houver viagem" class="w-full bg-black/40 border border-gray-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white focus:outline-none focus:border-accentYellow transition-all">
+                    <input type="text" id="medida-distancia" placeholder="Deixe 0 se não houver viagem" class="w-full bg-black/40 border border-gray-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white focus:outline-none focus:border-accentYellow transition-all">
                 </div>
             </div>
         </section>
@@ -232,15 +214,15 @@
         <section class="glass-card p-5 rounded-3xl shadow-xl">
             <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3"><i class="fa-solid fa-circle-exclamation mr-1.5 text-accentYellow"></i>Grau de Instalação</h2>
             <div class="grid grid-cols-3 gap-2">
-                <button id="btn-fator-facil" onclick="setFatorTipo('facil')" class="fator-btn py-3.5 px-2 rounded-2xl border border-accentYellow bg-accentYellow text-darkBg font-bold transition-all flex flex-col items-center">
+                <button id="btn-fator-facil" type="button" onclick="setFatorTipo('facil')" class="fator-btn py-3.5 px-2 rounded-2xl border border-accentYellow bg-accentYellow text-darkBg font-bold transition-all flex flex-col items-center">
                     <span class="text-sm font-outfit">Fácil</span>
                     <span id="lbl-fator-facil" class="text-[10px] opacity-80 mt-1 font-normal">+0%</span>
                 </button>
-                <button id="btn-fator-medio" onclick="setFatorTipo('medio')" class="fator-btn py-3.5 px-2 rounded-2xl border border-gray-800 bg-black/30 text-gray-400 font-bold transition-all flex flex-col items-center hover:border-gray-700">
+                <button id="btn-fator-medio" type="button" onclick="setFatorTipo('medio')" class="fator-btn py-3.5 px-2 rounded-2xl border border-gray-800 bg-black/30 text-gray-400 font-bold transition-all flex flex-col items-center hover:border-gray-700">
                     <span class="text-sm font-outfit">Médio</span>
                     <span id="lbl-fator-medio" class="text-[10px] opacity-60 mt-1 font-normal">+40%</span>
                 </button>
-                <button id="btn-fator-dificil" onclick="setFatorTipo('dificil')" class="fator-btn py-3.5 px-2 rounded-2xl border border-gray-800 bg-black/30 text-gray-400 font-bold transition-all flex flex-col items-center hover:border-gray-700">
+                <button id="btn-fator-dificil" type="button" onclick="setFatorTipo('dificil')" class="fator-btn py-3.5 px-2 rounded-2xl border border-gray-800 bg-black/30 text-gray-400 font-bold transition-all flex flex-col items-center hover:border-gray-700">
                     <span class="text-sm font-outfit">Difícil</span>
                     <span id="lbl-fator-dificil" class="text-[10px] opacity-60 mt-1 font-normal">+80%</span>
                 </button>
@@ -248,7 +230,7 @@
         </section>
 
         <div class="py-2">
-            <button onclick="calcularOrcamento()" class="w-full py-5 px-6 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-darkBg font-extrabold rounded-2xl shadow-xl shadow-amber-500/20 active:scale-[0.98] transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-3 border border-amber-300/30">
+            <button type="button" onclick="calcularOrcamento()" class="w-full py-5 px-6 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-darkBg font-extrabold rounded-2xl shadow-xl shadow-amber-500/20 active:scale-[0.98] transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-3 border border-amber-300/30">
                 <i class="fa-solid fa-calculator text-base"></i> 
                 <span>Calcular Orçamento Justo</span>
             </button>
@@ -273,16 +255,17 @@
                 </div>
             </div>
             
-            <button onclick="enviarWhatsApp()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]">
+            <button type="button" onclick="enviarWhatsApp()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]">
                 <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Mensagem para o Cliente
             </button>
-<!-- BOTÃO PARA GERAR PDF -->
-<button 
-    type="button" 
-    onclick="gerarPDFOrcamento()" 
-    class="w-full py-4 mt-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]">
-    <i class="fa-solid fa-file-pdf text-lg"></i> Baixar Proposta em PDF
-</button>
+
+            <!-- BOTÃO PARA GERAR PDF -->
+            <button 
+                type="button" 
+                onclick="gerarPDFOrcamento()" 
+                class="w-full py-4 mt-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]">
+                <i class="fa-solid fa-file-pdf text-lg"></i> Baixar Proposta em PDF
+            </button>
         </section>
     </main>
 
@@ -290,7 +273,7 @@
     <main id="view-historico" class="max-w-md mx-auto px-5 mt-6 space-y-4 hidden">
         <div class="flex items-center justify-between mb-2">
             <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-list-check mr-1.5 text-accentYellow"></i>Últimos Cálculos</h2>
-            <button onclick="limparHistorico()" class="text-[10px] text-red-400 hover:text-red-300 font-bold">
+            <button type="button" onclick="limparHistorico()" class="text-[10px] text-red-400 hover:text-red-300 font-bold">
                 <i class="fa-solid fa-trash-can mr-1"></i>Limpar Tudo
             </button>
         </div>
@@ -317,8 +300,8 @@
                 <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Adicionar Novo Material (Custo)</p>
                 <div class="flex gap-2">
                     <input type="text" id="add-material-nome" placeholder="Ex: Vinil Jateado" class="flex-1 bg-black/40 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-white">
-                    <input type="number" id="add-material-preco" placeholder="Custo/m²" class="w-20 bg-black/40 border border-gray-800 rounded-xl px-2 py-2.5 text-xs text-white text-center">
-                    <button onclick="adicionarMaterialNovo()" class="bg-accentYellow text-darkBg text-xs font-bold px-3.5 py-2.5 rounded-xl"><i class="fa-solid fa-plus"></i></button>
+                    <input type="text" id="add-material-preco" placeholder="Custo/m²" class="w-20 bg-black/40 border border-gray-800 rounded-xl px-2 py-2.5 text-xs text-white text-center">
+                    <button type="button" onclick="adicionarMaterialNovo()" class="bg-accentYellow text-darkBg text-xs font-bold px-3.5 py-2.5 rounded-xl"><i class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
         </section>
@@ -328,15 +311,15 @@
             <div class="grid grid-cols-3 gap-3">
                 <div>
                     <label class="block text-[10px] font-semibold text-gray-400 mb-1 text-center">Fácil (%)</label>
-                    <input type="number" id="cfg-fator-facil" class="w-full bg-black/40 border border-gray-800 rounded-xl px-2 py-2.5 text-xs text-white font-bold text-center focus:outline-none">
+                    <input type="text" id="cfg-fator-facil" class="w-full bg-black/40 border border-gray-800 rounded-xl px-2 py-2.5 text-xs text-white font-bold text-center focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-[10px] font-semibold text-gray-400 mb-1 text-center">Médio (%)</label>
-                    <input type="number" id="cfg-fator-medio" class="w-full bg-black/40 border border-gray-800 rounded-xl px-2 py-2.5 text-xs text-white font-bold text-center focus:outline-none">
+                    <input type="text" id="cfg-fator-medio" class="w-full bg-black/40 border border-gray-800 rounded-xl px-2 py-2.5 text-xs text-white font-bold text-center focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-[10px] font-semibold text-gray-400 mb-1 text-center">Difícil (%)</label>
-                    <input type="number" id="cfg-fator-dificil" class="w-full bg-black/40 border border-gray-800 rounded-xl px-2 py-2.5 text-xs text-white font-bold text-center focus:outline-none">
+                    <input type="text" id="cfg-fator-dificil" class="w-full bg-black/40 border border-gray-800 rounded-xl px-2 py-2.5 text-xs text-white font-bold text-center focus:outline-none">
                 </div>
             </div>
         </section>
@@ -345,19 +328,19 @@
             <h2 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"><i class="fa-solid fa-circle-dollar-to-slot mr-1.5 text-accentYellow"></i>Regras de Markup e Logística</h2>
             <div>
                 <label class="block text-xs font-semibold text-gray-400 mb-2">Margem de Lucro Desejada (%)</label>
-                <input type="number" id="cfg-margem" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-emerald-400 font-bold focus:outline-none">
+                <input type="text" id="cfg-margem" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-emerald-400 font-bold focus:outline-none">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-400 mb-2">Valor Cobrado por KM Rodado (R$)</label>
-                <input type="number" step="0.01" id="cfg-valorkm" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none">
+                <input type="text" id="cfg-valorkm" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-400 mb-2">Taxa Base de Instalação (R$)</label>
-                <input type="number" id="cfg-taxabase" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                <input type="text" id="cfg-taxabase" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-400 mb-2">Validade do Orçamento (Dias)</label>
-                <input type="number" id="cfg-validade" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none">
+                <input type="text" id="cfg-validade" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none">
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-400 mb-2">WhatsApp de Destino</label>
@@ -365,7 +348,7 @@
             </div>
         </section>
 
-        <button onclick="salvarConfiguracoes()" class="w-full py-4 bg-accentYellow hover:bg-accentYellowHover text-darkBg font-extrabold rounded-2xl uppercase tracking-wider text-xs shadow-lg">
+        <button type="button" onclick="salvarConfiguracoes()" class="w-full py-4 bg-accentYellow hover:bg-accentYellowHover text-darkBg font-extrabold rounded-2xl uppercase tracking-wider text-xs shadow-lg">
             <i class="fa-solid fa-floppy-disk mr-1.5"></i> Salvar Parâmetros V3.3
         </button>
     </main>
@@ -377,7 +360,7 @@
     </footer>
 
     <!-- ============================================== -->
-    <!-- JAVASCRIPT INTEGRADO AO SUPABASE & LOCK ENGINE -->
+    <!-- JAVASCRIPT INTEGRADO E REVISADO              -->
     <!-- ============================================== -->
     <script>
         const SUPABASE_URL = 'https://vjjzshpxohuspwjtkvbc.supabase.co';
@@ -399,6 +382,7 @@
         let areaCalculada = 0.0;
         let lucroCalculado = 0.0;
         let freteCalculado = 0.0;
+        let materialNomeSelecionado = "Adesivo / Serviço";
 
         const configPadrao = {
             empresa: "DN SOLUÇÕES",
@@ -415,6 +399,15 @@
             ]
         };
 
+        // Função utilitária para converter inputs numéricos (aceita "1,50" e "1.50")
+        function parseNumber(val) {
+            if (val === null || val === undefined || val === '') return 0;
+            if (typeof val === 'number') return val;
+            const cleanStr = val.toString().trim().replace(',', '.');
+            const num = parseFloat(cleanStr);
+            return isNaN(num) ? 0 : num;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             setupAuth();
 
@@ -429,7 +422,6 @@
             carregarConfiguracoes();
         });
 
-        // AUTENTICAÇÃO E CHECAGEM DE ASSINATURA
         function setupAuth() {
             const btnEntrar = document.getElementById('btn-entrar');
             const btnCadastrar = document.getElementById('btn-cadastrar');
@@ -467,21 +459,22 @@
             if (authModal) authModal.style.display = 'none';
             if (btnLogout) btnLogout.classList.remove('hidden');
 
-            // Verificar Status da Assinatura no Banco de Dados
-            const { data: perfil, error } = await supabaseClient
-                .from('perfis')
-                .select('status_assinatura')
-                .eq('id', currentUser.id)
-                .single();
+            try {
+                const { data: perfil, error } = await supabaseClient
+                    .from('perfis')
+                    .select('status_assinatura')
+                    .eq('id', currentUser.id)
+                    .single();
 
-            if (error || !perfil || perfil.status_assinatura !== 'ativo') {
-                // TRAVA ATIVADA: Assinatura inativa
-                if (paywallModal) paywallModal.classList.remove('hidden');
-            } else {
-                // ASSINANTE ATIVO: Libera o sistema
-                if (paywallModal) paywallModal.classList.add('hidden');
-                carregarMateriaisDoBanco();
-                renderHistorico();
+                if (error || !perfil || perfil.status_assinatura !== 'ativo') {
+                    if (paywallModal) paywallModal.classList.remove('hidden');
+                } else {
+                    if (paywallModal) paywallModal.classList.add('hidden');
+                    carregarMateriaisDoBanco();
+                    renderHistorico();
+                }
+            } catch (e) {
+                console.error("Erro na validação de assinatura:", e);
             }
         }
 
@@ -588,13 +581,14 @@
             document.getElementById('cfg-validade').value = config.validade || 3;
             document.getElementById('cfg-whatsapp').value = config.whatsapp || "";
 
-            document.getElementById('cfg-fator-facil').value = config.fatoresDificuldade.facil;
-            document.getElementById('cfg-fator-medio').value = config.fatoresDificuldade.medio;
-            document.getElementById('cfg-fator-dificil').value = config.fatoresDificuldade.dificil;
+            const fat = config.fatoresDificuldade || configPadrao.fatoresDificuldade;
+            document.getElementById('cfg-fator-facil').value = fat.facil;
+            document.getElementById('cfg-fator-medio').value = fat.medio;
+            document.getElementById('cfg-fator-dificil').value = fat.dificil;
 
-            document.getElementById('lbl-fator-facil').innerText = `+${config.fatoresDificuldade.facil}%`;
-            document.getElementById('lbl-fator-medio').innerText = `+${config.fatoresDificuldade.medio}%`;
-            document.getElementById('lbl-fator-dificil').innerText = `+${config.fatoresDificuldade.dificil}%`;
+            document.getElementById('lbl-fator-facil').innerText = `+${fat.facil}%`;
+            document.getElementById('lbl-fator-medio').innerText = `+${fat.medio}%`;
+            document.getElementById('lbl-fator-dificil').innerText = `+${fat.dificil}%`;
 
             renderSelectMateriais(config.materiais);
             renderConfigMateriais(config.materiais);
@@ -602,17 +596,21 @@
 
         async function carregarMateriaisDoBanco() {
             if (!currentUser || !supabaseClient) return;
-            const { data, error } = await supabaseClient
-                .from('materiais')
-                .select('*')
-                .eq('user_id', currentUser.id);
+            try {
+                const { data, error } = await supabaseClient
+                    .from('materiais')
+                    .select('*')
+                    .eq('user_id', currentUser.id);
 
-            if (!error && data && data.length > 0) {
-                const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
-                config.materiais = data;
-                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-                renderSelectMateriais(data);
-                renderConfigMateriais(data);
+                if (!error && data && data.length > 0) {
+                    const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+                    config.materiais = data;
+                    localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
+                    renderSelectMateriais(data);
+                    renderConfigMateriais(data);
+                }
+            } catch(e) {
+                console.error("Erro ao carregar materiais do banco:", e);
             }
         }
 
@@ -621,14 +619,15 @@
             select.innerHTML = '';
             
             if (!materiais || materiais.length === 0) {
-                select.innerHTML = '<option value="">Nenhum material cadastrado</option>';
+                select.innerHTML = '<option value="0">Nenhum material cadastrado</option>';
                 return;
             }
 
-            materiais.forEach(m => {
+            materiais.forEach((m, idx) => {
                 const opt = document.createElement('option');
                 opt.value = m.custo;
-                opt.innerText = `${m.nome} (Custo: R$ ${parseFloat(m.custo).toFixed(2)}/m²)`;
+                opt.dataset.nome = m.nome;
+                opt.innerText = `${m.nome} (Custo: R$ ${parseNumber(m.custo).toFixed(2)}/m²)`;
                 select.appendChild(opt);
             });
         }
@@ -647,8 +646,8 @@
                 div.className = "flex items-center gap-2 bg-black/30 p-2 rounded-xl border border-gray-800";
                 div.innerHTML = `
                     <span class="flex-1 text-xs text-white font-semibold">${m.nome}</span>
-                    <span class="text-xs text-amber-500 font-bold">R$ ${parseFloat(m.custo).toFixed(2)}/m²</span>
-                    <button onclick="removerMaterial(${idx}, '${m.id}')" class="text-red-400 hover:text-red-300 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                    <span class="text-xs text-amber-500 font-bold">R$ ${parseNumber(m.custo).toFixed(2)}/m²</span>
+                    <button type="button" onclick="removerMaterial(${idx}, '${m.id || ''}')" class="text-red-400 hover:text-red-300 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
                 `;
                 container.appendChild(div);
             });
@@ -667,13 +666,19 @@
         }
 
         async function calcularOrcamento() {
-            const largura = parseFloat(document.getElementById('medida-largura').value) || 0;
-            const altura = parseFloat(document.getElementById('medida-altura').value) || 0;
-            const distancia = parseFloat(document.getElementById('medida-distancia').value) || 0;
-            const custoMaterialM2 = parseFloat(document.getElementById('servico-material').value) || 0;
+            const largura = parseNumber(document.getElementById('medida-largura').value);
+            const altura = parseNumber(document.getElementById('medida-altura').value);
+            const distancia = parseNumber(document.getElementById('medida-distancia').value);
+            
+            const selectMat = document.getElementById('servico-material');
+            const custoMaterialM2 = parseNumber(selectMat.value);
+            
+            if (selectMat.selectedIndex >= 0 && selectMat.options[selectMat.selectedIndex]) {
+                materialNomeSelecionado = selectMat.options[selectMat.selectedIndex].dataset.nome || "Adesivo / Serviço";
+            }
 
             if (largura <= 0 || altura <= 0) {
-                alert("Preencha a Largura e a Altura com valores válidos!");
+                alert("Preencha a Largura e a Altura com valores válidos maior que zero!");
                 return;
             }
 
@@ -681,16 +686,16 @@
             
             areaCalculada = largura * altura;
             const custoBaseMaterial = areaCalculada * custoMaterialM2;
-            freteCalculado = distancia * (config.valorKm || 1.50);
+            freteCalculado = distancia * parseNumber(config.valorKm || 1.50);
             
-            const fatorPct = config.fatoresDificuldade[tipoFatorAtual] || 0;
-            const taxaBaseInstalacao = config.taxaBase || 25;
+            const fatorPct = parseNumber(config.fatoresDificuldade[tipoFatorAtual] || 0);
+            const taxaBaseInstalacao = parseNumber(config.taxaBase || 25);
             const adicionalDificuldade = taxaBaseInstalacao * (fatorPct / 100);
             const custoInstalacaoFinal = taxaBaseInstalacao + adicionalDificuldade;
 
             const custoTotalProducao = custoBaseMaterial + freteCalculado + custoInstalacaoFinal;
             
-            const margemPct = config.margemLucro || 100;
+            const margemPct = parseNumber(config.margemLucro || 100);
             lucroCalculado = custoTotalProducao * (margemPct / 100);
             valorCalculado = custoTotalProducao + lucroCalculado;
 
@@ -699,19 +704,22 @@
             document.getElementById('resultado-frete').innerText = `R$ ${freteCalculado.toFixed(2).replace('.', ',')}`;
             document.getElementById('resultado-lucro').innerText = `R$ ${lucroCalculado.toFixed(2).replace('.', ',')} (${margemPct}%)`;
 
-            const clienteNome = document.getElementById('cliente-nome').value || "Cliente Sem Nome";
+            const clienteNome = document.getElementById('cliente-nome').value.trim() || "Cliente Sem Nome";
 
-            // Salvar no Banco Supabase
             if (currentUser && supabaseClient) {
-                await supabaseClient.from('orcamentos').insert([
-                    {
-                        user_id: currentUser.id,
-                        cliente: clienteNome,
-                        valor: valorCalculado,
-                        area: areaCalculada,
-                        lucro_previsto: lucroCalculado
-                    }
-                ]);
+                try {
+                    await supabaseClient.from('orcamentos').insert([
+                        {
+                            user_id: currentUser.id,
+                            cliente: clienteNome,
+                            valor: valorCalculado,
+                            area: areaCalculada,
+                            lucro_previsto: lucroCalculado
+                        }
+                    ]);
+                } catch(e) {
+                    console.error("Erro ao salvar cálculo no Supabase:", e);
+                }
             }
         }
 
@@ -720,26 +728,30 @@
             container.innerHTML = '';
 
             if (currentUser && supabaseClient) {
-                const { data: hist } = await supabaseClient
-                    .from('orcamentos')
-                    .select('*')
-                    .order('created_at', { ascending: false })
-                    .limit(10);
+                try {
+                    const { data: hist } = await supabaseClient
+                        .from('orcamentos')
+                        .select('*')
+                        .order('created_at', { ascending: false })
+                        .limit(10);
 
-                if (hist && hist.length > 0) {
-                    hist.forEach(h => {
-                        const div = document.createElement('div');
-                        div.className = "glass-card p-4 rounded-2xl flex justify-between items-center";
-                        div.innerHTML = `
-                            <div>
-                                <h4 class="text-xs font-bold text-white">${h.cliente}</h4>
-                                <p class="text-[10px] text-gray-400">${new Date(h.created_at).toLocaleDateString('pt-BR')} • ${parseFloat(h.area).toFixed(2)}m²</p>
-                            </div>
-                            <span class="text-sm font-extrabold text-accentYellow">R$ ${parseFloat(h.valor).toFixed(2).replace('.', ',')}</span>
-                        `;
-                        container.appendChild(div);
-                    });
-                    return;
+                    if (hist && hist.length > 0) {
+                        hist.forEach(h => {
+                            const div = document.createElement('div');
+                            div.className = "glass-card p-4 rounded-2xl flex justify-between items-center";
+                            div.innerHTML = `
+                                <div>
+                                    <h4 class="text-xs font-bold text-white">${h.cliente}</h4>
+                                    <p class="text-[10px] text-gray-400">${new Date(h.created_at).toLocaleDateString('pt-BR')} • ${parseNumber(h.area).toFixed(2)}m²</p>
+                                </div>
+                                <span class="text-sm font-extrabold text-accentYellow">R$ ${parseNumber(h.valor).toFixed(2).replace('.', ',')}</span>
+                            `;
+                            container.appendChild(div);
+                        });
+                        return;
+                    }
+                } catch(e) {
+                    console.error("Erro ao carregar histórico:", e);
                 }
             }
             container.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">Nenhum orçamento salvo no histórico.</p>';
@@ -748,7 +760,11 @@
         async function limparHistorico() {
             if (confirm("Deseja apagar todo o seu histórico no banco?")) {
                 if (currentUser && supabaseClient) {
-                    await supabaseClient.from('orcamentos').delete().eq('user_id', currentUser.id);
+                    try {
+                        await supabaseClient.from('orcamentos').delete().eq('user_id', currentUser.id);
+                    } catch(e) {
+                        console.error("Erro ao limpar histórico:", e);
+                    }
                 }
                 renderHistorico();
             }
@@ -759,18 +775,31 @@
             const precoInput = document.getElementById('add-material-preco');
 
             const nome = nomeInput.value.trim();
-            const custo = parseFloat(precoInput.value);
+            const custo = parseNumber(precoInput.value);
 
-            if (!nome || isNaN(custo) || custo <= 0) {
-                alert("Preencha o nome e custo do material!");
+            if (!nome || custo <= 0) {
+                alert("Preencha o nome e um custo válido do material!");
                 return;
             }
 
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+
             if (currentUser && supabaseClient) {
-                await supabaseClient.from('materiais').insert([
-                    { user_id: currentUser.id, nome: nome, custo: custo }
-                ]);
-                await carregarMateriaisDoBanco();
+                try {
+                    await supabaseClient.from('materiais').insert([
+                        { user_id: currentUser.id, nome: nome, custo: custo }
+                    ]);
+                    await carregarMateriaisDoBanco();
+                } catch(e) {
+                    console.error("Erro ao salvar material no banco:", e);
+                    config.materiais.push({ id: Date.now().toString(), nome, custo });
+                    localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
+                    carregarConfiguracoes();
+                }
+            } else {
+                config.materiais.push({ id: Date.now().toString(), nome, custo });
+                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
+                carregarConfiguracoes();
             }
 
             nomeInput.value = '';
@@ -779,8 +808,12 @@
 
         async function removerMaterial(index, materialId) {
             if (currentUser && supabaseClient && materialId && materialId.length > 10) {
-                await supabaseClient.from('materiais').delete().eq('id', materialId);
-                await carregarMateriaisDoBanco();
+                try {
+                    await supabaseClient.from('materiais').delete().eq('id', materialId);
+                    await carregarMateriaisDoBanco();
+                } catch(e) {
+                    console.error("Erro ao remover do banco:", e);
+                }
             } else {
                 const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
                 config.materiais.splice(index, 1);
@@ -792,21 +825,21 @@
         function salvarConfiguracoes() {
             const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
 
-            config.empresa = document.getElementById('cfg-empresa').value;
-            config.margemLucro = parseFloat(document.getElementById('cfg-margem').value) || 100;
-            config.valorKm = parseFloat(document.getElementById('cfg-valorkm').value) || 1.50;
-            config.taxaBase = parseFloat(document.getElementById('cfg-taxabase').value) || 25;
-            config.validade = parseInt(document.getElementById('cfg-validade').value) || 3;
-            config.whatsapp = document.getElementById('cfg-whatsapp').value;
+            config.empresa = document.getElementById('cfg-empresa').value.trim() || "Sua Empresa";
+            config.margemLucro = parseNumber(document.getElementById('cfg-margem').value) || 100;
+            config.valorKm = parseNumber(document.getElementById('cfg-valorkm').value) || 1.50;
+            config.taxaBase = parseNumber(document.getElementById('cfg-taxabase').value) || 25;
+            config.validade = parseNumber(document.getElementById('cfg-validade').value) || 3;
+            config.whatsapp = document.getElementById('cfg-whatsapp').value.trim();
 
             config.fatoresDificuldade = {
-                facil: parseFloat(document.getElementById('cfg-fator-facil').value) || 0,
-                medio: parseFloat(document.getElementById('cfg-fator-medio').value) || 40,
-                dificil: parseFloat(document.getElementById('cfg-fator-dificil').value) || 80
+                facil: parseNumber(document.getElementById('cfg-fator-facil').value),
+                medio: parseNumber(document.getElementById('cfg-fator-medio').value),
+                dificil: parseNumber(document.getElementById('cfg-fator-dificil').value)
             };
 
             localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-            alert("Configurações salvas!");
+            alert("Configurações salvas com sucesso!");
             carregarConfiguracoes();
         }
 
@@ -817,97 +850,94 @@
             }
 
             const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
-            const cliente = document.getElementById('cliente-nome').value || "Cliente";
-            const numWhats = config.whatsapp ? config.whatsapp.replace(/\D/g, '') : "numwhats";
+            const cliente = document.getElementById('cliente-nome').value.trim() || "Cliente";
+            const numWhats = config.whatsapp ? config.whatsapp.replace(/\D/g, '') : "";
 
-            const texto = `Olá *${cliente}*, segue o orçamento solicitado pela *${config.empresa}*:\n\n` +
+            const texto = `Olá *${cliente}*, segue o orçamento solicitado para *${config.empresa}*:\n\n` +
+                          `📌 *Serviço/Material:* ${materialNomeSelecionado}\n` +
                           `📐 *Área Total:* ${areaCalculada.toFixed(2).replace('.', ',')} m²\n` +
                           `💰 *Valor Total:* R$ ${valorCalculado.toFixed(2).replace('.', ',')}\n` +
                           `⏱️ *Validade:* ${config.validade} dias\n\n` +
-                          `Qualquer dúvida estarei à disposição!`;
+                          `Fico à disposição para dúvidas e aprovação!`;
 
             const url = `https://wa.me/55${numWhats}?text=${encodeURIComponent(texto)}`;
             window.open(url, '_blank');
-function gerarPDFOrcamento() {
-    // Leitura direta das variáveis do seu sistema
-    const total = (typeof valorCalculado !== 'undefined') 
-        ? `R$ ${valorCalculado.toFixed(2).replace('.', ',')}` 
-        : (document.querySelector('#resultado-total')?.innerText || "R$ 0,00");
+        }
 
-    const area = (typeof areaCalculada !== 'undefined') 
-        ? `${areaCalculada.toFixed(2).replace('.', ',')} m²` 
-        : (document.querySelector('#resultado-area')?.innerText || "Área calculada");
+        function gerarPDFOrcamento() {
+            if (valorCalculado <= 0) {
+                alert("Realize um cálculo antes de gerar o PDF!");
+                return;
+            }
 
-    const empresa = (typeof config !== 'undefined' && config.empresa) 
-        ? config.empresa 
-        : (document.querySelector('#cfg-nome')?.value || "OrçaMetro - Oficina");
+            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+            const cliente = document.getElementById('cliente-nome').value.trim() || "Cliente Especial";
 
-    const validade = (typeof config !== 'undefined' && config.validade) 
-        ? `${config.validade} dias` 
-        : "7 dias";
+            const total = `R$ ${valorCalculado.toFixed(2).replace('.', ',')}`;
+            const area = `${areaCalculada.toFixed(2).replace('.', ',')} m²`;
+            const empresa = config.empresa || "DN SOLUÇÕES";
+            const validade = `${config.validade || 3} dias`;
+            const dataHoje = new Date().toLocaleDateString('pt-BR');
 
-    const dataHoje = new Date().toLocaleDateString('pt-BR');
+            const container = document.getElementById('area-impressao-pdf');
+            if (!container) {
+                alert("Erro técnico: elemento 'area-impressao-pdf' não encontrado.");
+                return;
+            }
 
-    const container = document.getElementById('area-impressao-pdf');
-    if (!container) {
-        alert("Erro técnico: elemento 'area-impressao-pdf' não encontrado.");
-        return;
-    }
+            container.innerHTML = `
+                <div style="font-family: Arial, sans-serif; color: #000; padding: 30px; max-width: 750px; margin: auto; background-color: #fff;">
+                    <div style="border-bottom: 3px solid #111; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div>
+                            <h1 style="margin: 0; font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">${empresa}</h1>
+                            <span style="font-size: 12px; color: #555; font-weight: 600;">PROPOSTA COMERCIAL DE SERVIÇOS</span>
+                        </div>
+                        <div style="text-align: right; font-size: 12px; color: #333;">
+                            <p style="margin: 0;">Data: <strong>${dataHoje}</strong></p>
+                            <p style="margin: 3px 0 0 0;">Validade: <strong>${validade}</strong></p>
+                        </div>
+                    </div>
 
-    container.innerHTML = `
-        <div style="font-family: Arial, sans-serif; color: #000; padding: 20px; max-width: 700px; margin: auto;">
-            <div style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h1 style="margin: 0; font-size: 20px; font-weight: bold; text-transform: uppercase;">${empresa}</h1>
-                    <span style="font-size: 12px; color: #444;">Proposta Comercial de Serviços</span>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; border-radius: 6px;">
+                        <p style="margin: 0; color: #1e293b;"><strong>Cliente Atendido:</strong> ${cliente}</p>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #0f172a; color: #ffffff;">
+                                <th style="padding: 10px 12px; text-align: left; font-weight: 700;">Descrição do Serviço</th>
+                                <th style="padding: 10px 12px; text-align: right; font-weight: 700;">Dimensão / Área</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                                    <strong style="color: #0f172a; font-size: 14px;">${materialNomeSelecionado}</strong><br>
+                                    <span style="font-size: 11px; color: #64748b;">Incluso fornecimento de material, confecção e instalação especializada.</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: 700; font-size: 14px; color: #0f172a;">
+                                    ${area}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="border: 2px solid #0f172a; padding: 16px; text-align: right; border-radius: 8px; margin-top: 20px; background-color: #f8fafc;">
+                        <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #475569; letter-spacing: 0.5px;">Valor Total do Investimento</span>
+                        <div style="font-size: 28px; font-weight: 900; margin-top: 4px; color: #0f172a;">${total}</div>
+                    </div>
+
+                    <div style="margin-top: 30px; font-size: 11px; color: #64748b; border-top: 1px solid #cbd5e1; padding-top: 12px; line-height: 1.5;">
+                        <p style="margin: 0;">• <strong>Pagamento:</strong> Condições a combinar no momento da aprovação do pedido.</p>
+                        <p style="margin: 3px 0 0 0;">• A execução do serviço está sujeita à confirmação final das medidas no local.</p>
+                    </div>
                 </div>
-                <div style="text-align: right; font-size: 12px;">
-                    <p style="margin: 0;">Data: <strong>${dataHoje}</strong></p>
-                    <p style="margin: 2px 0 0 0;">Validade: <strong>${validade}</strong></p>
-                </div>
-            </div>
+            `;
 
-            <div style="background: #f4f4f5; padding: 10px; margin-bottom: 15px; font-size: 13px; border-radius: 4px;">
-                <strong>Documento:</strong> Orçamento de Serviço de Comunicação Visual
-            </div>
-
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
-                <thead>
-                    <tr style="background: #111; color: #fff;">
-                        <th style="padding: 8px; text-align: left;">Descrição do Serviço</th>
-                        <th style="padding: 8px; text-align: right;">Medida / Detalhes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="padding: 10px 8px; border-bottom: 1px solid #ddd;">
-                            <strong>Comunicação Visual / Envelopamento</strong><br>
-                            <span style="font-size: 11px; color: #555;">Fornecimento de material, confecção e instalação.</span>
-                        </td>
-                        <td style="padding: 10px 8px; border-bottom: 1px solid #ddd; text-align: right; font-weight: bold;">
-                            ${area}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div style="border: 2px solid #111; padding: 12px; text-align: right; border-radius: 4px; margin-top: 20px; background-color: #fafafa;">
-                <span style="font-size: 11px; text-transform: uppercase; font-weight: bold; color: #444;">Valor Total do Investimento</span>
-                <div style="font-size: 24px; font-weight: bold; margin-top: 4px; color: #000;">${total}</div>
-            </div>
-
-            <div style="margin-top: 25px; font-size: 10px; color: #555; border-top: 1px solid #ccc; padding-top: 10px; line-height: 1.4;">
-                <p style="margin: 0;">• <strong>Condições de Pagamento:</strong> 50% de sinal no aceite e 50% na conclusão.</p>
-                <p style="margin: 2px 0 0 0;">• Valores sujeitos a alteração caso haja variação nas medidas finais confirmadas no local.</p>
-            </div>
-        </div>
-    `;
-
-    window.print();
-}
-
+            window.print();
         }
     </script>
-<div id="area-impressao-pdf"></div>
+
+    <div id="area-impressao-pdf"></div>
 </body>
 </html>
