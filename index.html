@@ -56,6 +56,10 @@
         }
     </style>
 </head>
+
+<!-- Biblioteca para gerar PDF (html2pdf) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <body class="min-h-screen pb-16 font-sans antialiased">
 
     <!-- ==================== OVERLAY DE AUTENTICAÇÃO ==================== -->
@@ -242,6 +246,13 @@
             <button onclick="enviarWhatsApp()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]">
                 <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Mensagem para o Cliente
             </button>
+<!-- BOTÃO PARA GERAR PDF -->
+<button 
+    type="button" 
+    onclick="gerarPDFOrcamento()" 
+    class="w-full py-4 mt-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]">
+    <i class="fa-solid fa-file-pdf text-lg"></i> Baixar Proposta em PDF
+</button>
         </section>
     </main>
 
@@ -777,7 +788,7 @@
 
             const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
             const cliente = document.getElementById('cliente-nome').value || "Cliente";
-            const numWhats = config.whatsapp ? config.whatsapp.replace(/\D/g, '') : "11939386682";
+            const numWhats = config.whatsapp ? config.whatsapp.replace(/\D/g, '') : "numwhats";
 
             const texto = `Olá *${cliente}*, segue o orçamento solicitado pela *${config.empresa}*:\n\n` +
                           `📐 *Área Total:* ${areaCalculada.toFixed(2).replace('.', ',')} m²\n` +
