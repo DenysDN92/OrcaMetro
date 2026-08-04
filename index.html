@@ -16,6 +16,15 @@
     <!-- Supabase SDK JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- Inicialização do Supabase com a Chave Pública -->
+    <script>
+        const SUPABASE_URL = 'https://vjjzhpxohuspwjtkvbc.supabase.co';
+        const SUPABASE_KEY = 'Sb_publishable_0yfXOWXYi2xDKNz7EHAb7w_8naps5-7';
+        
+        // Conexão via objeto global da CDN
+        const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    </script>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -363,19 +372,7 @@
     <!-- JAVASCRIPT INTEGRADO E REVISADO              -->
     <!-- ============================================== -->
     <script>
-        const SUPABASE_URL = 'https://vjjzshpxohuspwjtkvbc.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_0yfXOWXYi2xDKNz7EHAb7w_8naps5-7';
-
-        let supabaseClient = null;
         let currentUser = null;
-
-        try {
-            if (typeof supabase !== 'undefined') {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            }
-        } catch (e) {
-            console.error("Erro Supabase:", e);
-        }
 
         let tipoFatorAtual = 'facil';
         let valorCalculado = 0.0;
@@ -623,7 +620,7 @@
                 return;
             }
 
-            materiais.forEach((m, idx) => {
+            materiais.forEach((m) => {
                 const opt = document.createElement('option');
                 opt.value = m.custo;
                 opt.dataset.nome = m.nome;
@@ -939,14 +936,15 @@
     </script>
 
     <div id="area-impressao-pdf"></div>
-<!-- RODAPÉ DE TERMOS E PRIVACIDADE -->
-<footer style="text-align: center; padding: 20px 10px; font-size: 14px; color: #666; border-top: 1px solid #eee; margin-top: 40px;">
-  <p>© 2026 OrçaMetro - DN SOLUÇÕES. Todos os direitos reservados.</p>
-  <p>
-    <a href="termos.html" target="_blank" style="color: #2563EB; text-decoration: none; margin: 0 10px;">Termos de Uso</a> | 
-    <a href="privacidade.html" target="_blank" style="color: #2563EB; text-decoration: none; margin: 0 10px;">Política de Privacidade</a>
-  </p>
-</footer>
+
+    <!-- RODAPÉ DE TERMOS E PRIVACIDADE -->
+    <footer style="text-align: center; padding: 20px 10px; font-size: 14px; color: #666; border-top: 1px solid #eee; margin-top: 40px;">
+      <p>© 2026 OrçaMetro - DN SOLUÇÕES. Todos os direitos reservados.</p>
+      <p>
+        <a href="termos.html" target="_blank" style="color: #2563EB; text-decoration: none; margin: 0 10px;">Termos de Uso</a> | 
+        <a href="privacidade.html" target="_blank" style="color: #2563EB; text-decoration: none; margin: 0 10px;">Política de Privacidade</a>
+      </p>
+    </footer>
 
 </body>
 </html>
