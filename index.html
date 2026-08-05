@@ -116,21 +116,21 @@
         </div>
     </div>
 
-    <!-- ==================== BLOQUEIO DE ASSINATURA INATIVA ==================== -->
+    <!-- ==================== BLOQUEIO DE ASSINATURA / LICENÇA (ASAAS) ==================== -->
     <div id="paywall-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-slate-950/95 p-4 backdrop-blur-md">
         <div class="glass-card w-full max-w-sm rounded-3xl p-6 text-center shadow-2xl border border-amber-500/30">
             <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4 text-amber-500 text-2xl">
-                <i class="fa-solid fa-lock"></i>
+                <i class="fa-solid fa-crown"></i>
             </div>
-            <h3 class="text-xl font-extrabold text-white font-outfit mb-2">Assinatura Necessária</h3>
+            <h3 class="text-xl font-extrabold text-white font-outfit mb-2">Acesso Vitalício Necessário</h3>
             <p class="text-xs text-slate-400 mb-6 leading-relaxed">
-                Sua conta está registrada, mas a assinatura ainda não foi ativada. Assine agora para ter acesso ilimitado.
+                Sua conta está registrada! Adquira a **Licença Vitalícia** (pagamento único via PIX, Cartão ou Boleto) para liberar seu acesso sem mensalidades.
             </p>
-            <a id="btn-comprar-kiwify" href="https://kiwify.com.br" target="_blank" 
+            <a id="btn-comprar-asaas" href="https://www.asaas.com/c/ahrsd2kdm8jcmqqq" target="_blank" 
                class="block w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-2xl shadow-lg text-sm tracking-wide transition-all uppercase mb-3">
-                <i class="fa-solid fa-crown mr-2"></i>Ativar Assinatura
+                <i class="fa-solid fa-bolt mr-2"></i>Garantir Licença (R$ 127,00)
             </a>
-            <button onclick="fazerLogout()" class="text-xs text-slate-500 hover:text-slate-300 font-semibold">Sair da conta</button>
+            <button onclick="fazerLogout()" class="text-xs text-slate-500 hover:text-slate-300 font-semibold transition-all">Sair da conta</button>
         </div>
     </div>
 
@@ -142,7 +142,7 @@
             </div>
             <div>
                 <h1 class="text-xl font-extrabold text-white tracking-wide font-outfit">Orça<span class="text-accentYellow">Metro</span></h1>
-                <p class="text-[10px] text-amber-500 font-bold tracking-widest uppercase">MVP Comercial V3.3</p>
+                <p class="text-[10px] text-amber-500 font-bold tracking-widest uppercase">MVP Comercial V3.3 - Licença Vitalícia</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
@@ -463,7 +463,8 @@
                     .eq('id', currentUser.id)
                     .single();
 
-                if (error || !perfil || perfil.status_assinatura !== 'ativo') {
+                // Aceita 'ativo' ou 'vitalicio' para liberar o acesso
+                if (error || !perfil || (perfil.status_assinatura !== 'ativo' && perfil.status_assinatura !== 'vitalicio')) {
                     if (paywallModal) paywallModal.classList.remove('hidden');
                 } else {
                     if (paywallModal) paywallModal.classList.add('hidden');
@@ -471,7 +472,7 @@
                     renderHistorico();
                 }
             } catch (e) {
-                console.error("Erro na validação de assinatura:", e);
+                console.error("Erro na validação da licença:", e);
             }
         }
 
