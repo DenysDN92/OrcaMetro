@@ -16,13 +16,15 @@
     <!-- Supabase SDK JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Inicialização do Supabase com a Chave Pública -->
+    <!-- Inicialização do Supabase Corrigida -->
     <script>
         const SUPABASE_URL = 'https://vjjzhpxohuspwjtkvbc.supabase.co';
-        const SUPABASE_KEY = 'Sb_publishable_0yfXOWXYi2xDKNz7EHAb7w_8naps5-7';
+        const SUPABASE_KEY = 'sb_publishable_0yfXOWXYi2xDKNz7EHAb7w_8naps5-7';
         
-        // Conexão via objeto global da CDN
-        const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+        var supabaseClient = null;
+        if (typeof supabase !== 'undefined') {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
     </script>
 
     <!-- Tailwind CSS CDN -->
@@ -98,7 +100,7 @@
                 <input type="email" id="auth-email" placeholder="Seu E-mail" 
                     class="w-full rounded-xl border border-slate-800 bg-black/50 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-amber-500 focus:outline-none transition-all">
                 
-                <!-- Campo de Senha com Botão de Visualização (Olho) -->
+                <!-- Campo de Senha com Olho -->
                 <div class="relative w-full">
                     <input type="password" id="auth-password" placeholder="Sua Senha" 
                         class="w-full rounded-xl border border-slate-800 bg-black/50 px-4 py-3 pr-12 text-sm text-white placeholder-slate-500 focus:border-amber-500 focus:outline-none transition-all">
@@ -403,7 +405,6 @@
             ]
         };
 
-        // Função para alternar visibilidade da senha (Olho)
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('auth-password');
             const eyeIcon = document.getElementById('eye-icon');
@@ -418,7 +419,6 @@
             }
         }
 
-        // Função utilitária para converter inputs numéricos (aceita "1,50" e "1.50")
         function parseNumber(val) {
             if (val === null || val === undefined || val === '') return 0;
             if (typeof val === 'number') return val;
@@ -485,7 +485,6 @@
                     .eq('id', currentUser.id)
                     .single();
 
-                // Aceita 'ativo' ou 'vitalicio' para liberar o acesso
                 if (error || !perfil || (perfil.status_assinatura !== 'ativo' && perfil.status_assinatura !== 'vitalicio')) {
                     if (paywallModal) paywallModal.classList.remove('hidden');
                 } else {
@@ -509,6 +508,12 @@
             if (!email || !password) {
                 msg.style.color = '#f43f5e';
                 msg.innerText = 'Preencha e-mail e senha.';
+                return;
+            }
+
+            if (!supabaseClient) {
+                msg.style.color = '#f43f5e';
+                msg.innerText = 'Erro de inicialização no Supabase.';
                 return;
             }
 
@@ -539,6 +544,12 @@
             if (password.length < 6) {
                 msg.style.color = '#f43f5e';
                 msg.innerText = 'Senha mínima: 6 caracteres.';
+                return;
+            }
+
+            if (!supabaseClient) {
+                msg.style.color = '#f43f5e';
+                msg.innerText = 'Erro de conexão.';
                 return;
             }
 
