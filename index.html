@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OrçaMetro - Profissional V3.3</title>
+    <title>OrçaMetro - Profissional V3.3.1</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
 
     <script>
         const SUPABASE_URL = 'https://vjjzhpxohuspwjtkvbc.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqanpocHhvaHVzcHdqdGt2YmMiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczODYwOTY2MCwiZXhwIjoyMDU0MTg1NjYwfQ.K-5j9_xK3v8L7m-N2X0P-v6R9W0L5m8K-N2X0P-v6R9';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqanpzaHB4b2h1c3B3anRrdmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjA4NzMsImV4cCI6MjEwMDkzNjg3M30.F6kovNGiW0uSamSiTVLzSbECwxFdnH7BZzZ7OAvQywI';
         
         let supabaseClient = null;
         try {
@@ -144,7 +144,7 @@
             </div>
             <div>
                 <h1 class="text-xl font-extrabold text-white tracking-wide font-outfit">Orça<span class="text-accentYellow">Metro</span></h1>
-                <p class="text-[10px] text-amber-500 font-bold tracking-widest uppercase">MVP Comercial V3.3 - Licença Vitalícia</p>
+                <p class="text-[10px] text-amber-500 font-bold tracking-widest uppercase">MVP Comercial V3.3.1 - Vitalício</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
@@ -190,7 +190,7 @@
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-500">
                         <i class="fa-solid fa-scroll text-xs"></i>
                     </span>
-                    <select id="servico-material" class="w-full bg-black/40 border border-gray-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white focus:outline-none focus:border-accentYellow transition-all appearance-none">
+                    <select id="servico-material" onchange="atualizarNomeMaterialSelecionado()" class="w-full bg-black/40 border border-gray-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white focus:outline-none focus:border-accentYellow transition-all appearance-none">
                     </select>
                     <span class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-gray-500">
                         <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -350,19 +350,24 @@
                 <input type="text" id="cfg-validade" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none">
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-400 mb-2">WhatsApp de Destino</label>
+                <label class="block text-xs font-semibold text-gray-400 mb-2">WhatsApp (Apenas DDD + Número, ex: 11939386682)</label>
                 <input type="text" id="cfg-whatsapp" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
             </div>
         </section>
 
         <button type="button" onclick="salvarConfiguracoes()" class="w-full py-4 bg-accentYellow hover:bg-accentYellowHover text-darkBg font-extrabold rounded-2xl uppercase tracking-wider text-xs shadow-lg">
-            <i class="fa-solid fa-floppy-disk mr-1.5"></i> Salvar Parâmetros V3.3
+            <i class="fa-solid fa-floppy-disk mr-1.5"></i> Salvar Parâmetros V3.3.1
         </button>
     </main>
 
-    <footer class="mt-12 text-center text-[10px] text-gray-400/80 max-w-md mx-auto px-5">
-        <p>OrçaMetro é propriedade intelectual de DN SOLUÇÕES.</p>
-        <p class="mt-1 text-accentYellow font-semibold tracking-wide">Licença Comercial MVP Ativa</p>
+    <!-- RODAPÉ ÚNICO E ORGANIZADO -->
+    <footer class="mt-12 text-center text-xs text-gray-400/80 max-w-md mx-auto px-5 space-y-2">
+        <p>© 2026 OrçaMetro - DN SOLUÇÕES. Todos os direitos reservados.</p>
+        <p class="text-accentYellow font-semibold tracking-wide">Licença Comercial MVP Ativa</p>
+        <p>
+            <a href="termos.html" target="_blank" class="text-blue-400 hover:underline mx-2">Termos de Uso</a> | 
+            <a href="privacidade.html" target="_blank" class="text-blue-400 hover:underline mx-2">Política de Privacidade</a>
+        </p>
     </footer>
 
     <script>
@@ -382,12 +387,7 @@
             whatsapp: "11939386682",
             margemLucro: 100,
             valorKm: 1.50,
-            fatoresDificuldade: { facil: 0, medio: 40, dificil: 80 },
-            materiais: [
-                { id: '1', nome: 'Adesivo Vinil Brilho', custo: 35.00 },
-                { id: '2', nome: 'Adesivo Fosco Premium', custo: 42.00 },
-                { id: '3', nome: 'Adesivo Perfurado', custo: 48.00 }
-            ]
+            fatoresDificuldade: { facil: 0, medio: 40, dificil: 80 }
         };
 
         function togglePasswordVisibility() {
@@ -415,15 +415,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             setupAuth();
 
-            if (!localStorage.getItem('orcametro_config_v3_db')) {
-                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(configPadrao));
-            }
-
             window.addEventListener('online', atualizarStatusRede);
             window.addEventListener('offline', atualizarStatusRede);
             atualizarStatusRede();
-
-            carregarConfiguracoes();
         });
 
         function setupAuth() {
@@ -466,7 +460,7 @@
             try {
                 const { data: perfil, error } = await supabaseClient
                     .from('perfis')
-                    .select('status_assinatura')
+                    .select('*')
                     .eq('id', currentUser.id)
                     .maybeSingle();
 
@@ -474,7 +468,8 @@
                     if (paywallModal) paywallModal.classList.remove('hidden');
                 } else {
                     if (paywallModal) paywallModal.classList.add('hidden');
-                    carregarMateriaisDoBanco();
+                    await carregarConfiguracoesDoBanco(perfil);
+                    await carregarMateriaisDoBanco();
                     renderHistorico();
                 }
             } catch (e) {
@@ -503,7 +498,7 @@
             }
 
             try {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) {
                     msg.style.color = '#f43f5e';
                     msg.innerText = 'Erro ao entrar: ' + (error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message);
@@ -544,7 +539,7 @@
             }
 
             try {
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                const { error } = await supabaseClient.auth.signUp({ email, password });
                 if (error) {
                     msg.style.color = '#f43f5e';
                     msg.innerText = 'Erro: ' + error.message;
@@ -597,17 +592,25 @@
             }
         }
 
-        function carregarConfiguracoes() {
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+        async function carregarConfiguracoesDoBanco(perfil) {
+            const config = {
+                empresa: perfil.empresa || configPadrao.empresa,
+                margemLucro: perfil.margem_lucro !== null ? perfil.margem_lucro : configPadrao.margemLucro,
+                valorKm: perfil.valor_km !== null ? perfil.valor_km : configPadrao.valorKm,
+                taxaBase: perfil.taxa_base !== null ? perfil.taxa_base : configPadrao.taxaBase,
+                validade: perfil.validade !== null ? perfil.validade : configPadrao.validade,
+                whatsapp: perfil.whatsapp || configPadrao.whatsapp,
+                fatoresDificuldade: perfil.fatores_dificuldade || configPadrao.fatoresDificuldade
+            };
 
-            document.getElementById('cfg-empresa').value = config.empresa || "";
-            document.getElementById('cfg-margem').value = config.margemLucro || 100;
-            document.getElementById('cfg-valorkm').value = config.valorKm || 1.50;
-            document.getElementById('cfg-taxabase').value = config.taxaBase || 25;
-            document.getElementById('cfg-validade').value = config.validade || 3;
-            document.getElementById('cfg-whatsapp').value = config.whatsapp || "";
+            document.getElementById('cfg-empresa').value = config.empresa;
+            document.getElementById('cfg-margem').value = config.margemLucro;
+            document.getElementById('cfg-valorkm').value = config.valorKm;
+            document.getElementById('cfg-taxabase').value = config.taxaBase;
+            document.getElementById('cfg-validade').value = config.validade;
+            document.getElementById('cfg-whatsapp').value = config.whatsapp;
 
-            const fat = config.fatoresDificuldade || configPadrao.fatoresDificuldade;
+            const fat = config.fatoresDificuldade;
             document.getElementById('cfg-fator-facil').value = fat.facil;
             document.getElementById('cfg-fator-medio').value = fat.medio;
             document.getElementById('cfg-fator-dificil').value = fat.dificil;
@@ -615,9 +618,6 @@
             document.getElementById('lbl-fator-facil').innerText = `+${fat.facil}%`;
             document.getElementById('lbl-fator-medio').innerText = `+${fat.medio}%`;
             document.getElementById('lbl-fator-dificil').innerText = `+${fat.dificil}%`;
-
-            renderSelectMateriais(config.materiais);
-            renderConfigMateriais(config.materiais);
         }
 
         async function carregarMateriaisDoBanco() {
@@ -628,10 +628,7 @@
                     .select('*')
                     .eq('user_id', currentUser.id);
 
-                if (!error && data && data.length > 0) {
-                    const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
-                    config.materiais = data;
-                    localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
+                if (!error && data) {
                     renderSelectMateriais(data);
                     renderConfigMateriais(data);
                 }
@@ -646,6 +643,7 @@
             
             if (!materiais || materiais.length === 0) {
                 select.innerHTML = '<option value="0">Nenhum material cadastrado</option>';
+                materialNomeSelecionado = "Nenhum material";
                 return;
             }
 
@@ -656,6 +654,15 @@
                 opt.innerText = `${m.nome} (Custo: R$ ${parseNumber(m.custo).toFixed(2)}/m²)`;
                 select.appendChild(opt);
             });
+
+            atualizarNomeMaterialSelecionado();
+        }
+
+        function atualizarNomeMaterialSelecionado() {
+            const select = document.getElementById('servico-material');
+            if (select.selectedIndex >= 0 && select.options[select.selectedIndex]) {
+                materialNomeSelecionado = select.options[select.selectedIndex].dataset.nome || "Adesivo / Serviço";
+            }
         }
 
         function renderConfigMateriais(materiais) {
@@ -667,13 +674,13 @@
                 return;
             }
 
-            materiais.forEach((m, idx) => {
+            materiais.forEach((m) => {
                 const div = document.createElement('div');
                 div.className = "flex items-center gap-2 bg-black/30 p-2 rounded-xl border border-gray-800";
                 div.innerHTML = `
                     <span class="flex-1 text-xs text-white font-semibold">${m.nome}</span>
                     <span class="text-xs text-amber-500 font-bold">R$ ${parseNumber(m.custo).toFixed(2)}/m²</span>
-                    <button type="button" onclick="removerMaterial(${idx}, '${m.id || ''}')" class="text-red-400 hover:text-red-300 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                    <button type="button" onclick="removerMaterial('${m.id}')" class="text-red-400 hover:text-red-300 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
                 `;
                 container.appendChild(div);
             });
@@ -696,32 +703,36 @@
             const altura = parseNumber(document.getElementById('medida-altura').value);
             const distancia = parseNumber(document.getElementById('medida-distancia').value);
             
+            atualizarNomeMaterialSelecionado();
             const selectMat = document.getElementById('servico-material');
             const custoMaterialM2 = parseNumber(selectMat.value);
-            
-            if (selectMat.selectedIndex >= 0 && selectMat.options[selectMat.selectedIndex]) {
-                materialNomeSelecionado = selectMat.options[selectMat.selectedIndex].dataset.nome || "Adesivo / Serviço";
-            }
 
             if (largura <= 0 || altura <= 0) {
                 alert("Preencha a Largura e a Altura com valores válidos maior que zero!");
                 return;
             }
 
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+            // Pega os fatores atuais salvos nos inputs da aba config para cálculo dinâmico
+            const margemPct = parseNumber(document.getElementById('cfg-margem').value) || 100;
+            const valorKm = parseNumber(document.getElementById('cfg-valorkm').value) || 1.50;
+            const taxaBaseInstalacao = parseNumber(document.getElementById('cfg-taxabase').value) || 25;
+            
+            const fatoresDificuldade = {
+                facil: parseNumber(document.getElementById('cfg-fator-facil').value),
+                medio: parseNumber(document.getElementById('cfg-fator-medio').value),
+                dificil: parseNumber(document.getElementById('cfg-fator-dificil').value)
+            };
             
             areaCalculada = largura * altura;
             const custoBaseMaterial = areaCalculada * custoMaterialM2;
-            freteCalculado = distancia * parseNumber(config.valorKm || 1.50);
+            freteCalculado = distancia * valorKm;
             
-            const fatorPct = parseNumber(config.fatoresDificuldade[tipoFatorAtual] || 0);
-            const taxaBaseInstalacao = parseNumber(config.taxaBase || 25);
+            const fatorPct = parseNumber(fatoresDificuldade[tipoFatorAtual] || 0);
             const adicionalDificuldade = taxaBaseInstalacao * (fatorPct / 100);
             const custoInstalacaoFinal = taxaBaseInstalacao + adicionalDificuldade;
 
             const custoTotalProducao = custoBaseMaterial + freteCalculado + custoInstalacaoFinal;
             
-            const margemPct = parseNumber(config.margemLucro || 100);
             lucroCalculado = custoTotalProducao * (margemPct / 100);
             valorCalculado = custoTotalProducao + lucroCalculado;
 
@@ -758,6 +769,7 @@
                     const { data: hist } = await supabaseClient
                         .from('orcamentos')
                         .select('*')
+                        .eq('user_id', currentUser.id)
                         .order('created_at', { ascending: false })
                         .limit(10);
 
@@ -808,65 +820,79 @@
                 return;
             }
 
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
-
             if (currentUser && supabaseClient) {
                 try {
-                    await supabaseClient.from('materiais').insert([
+                    const { error } = await supabaseClient.from('materiais').insert([
                         { user_id: currentUser.id, nome: nome, custo: custo }
                     ]);
+                    if (error) throw error;
                     await carregarMateriaisDoBanco();
+                    nomeInput.value = '';
+                    precoInput.value = '';
                 } catch(e) {
                     console.error("Erro ao salvar material no banco:", e);
-                    config.materiais.push({ id: Date.now().toString(), nome, custo });
-                    localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-                    carregarConfiguracoes();
+                    alert("Erro ao salvar material no Supabase.");
                 }
-            } else {
-                config.materiais.push({ id: Date.now().toString(), nome, custo });
-                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-                carregarConfiguracoes();
-            }
-
-            nomeInput.value = '';
-            precoInput.value = '';
-        }
-
-        async function removerMaterial(index, materialId) {
-            if (currentUser && supabaseClient && materialId && materialId.length > 10) {
-                try {
-                    await supabaseClient.from('materiais').delete().eq('id', materialId);
-                    await carregarMateriaisDoBanco();
-                } catch(e) {
-                    console.error("Erro ao remover do banco:", e);
-                }
-            } else {
-                const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
-                config.materiais.splice(index, 1);
-                localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-                carregarConfiguracoes();
             }
         }
 
-        function salvarConfiguracoes() {
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+        async function removerMaterial(materialId) {
+            if (!materialId) return;
+            if (confirm("Deseja realmente excluir este material?")) {
+                if (currentUser && supabaseClient) {
+                    try {
+                        const { error } = await supabaseClient.from('materiais').delete().eq('id', materialId);
+                        if (error) throw error;
+                        await carregarMateriaisDoBanco();
+                    } catch(e) {
+                        console.error("Erro ao remover do banco:", e);
+                        alert("Erro ao excluir material.");
+                    }
+                }
+            }
+        }
 
-            config.empresa = document.getElementById('cfg-empresa').value.trim() || "Sua Empresa";
-            config.margemLucro = parseNumber(document.getElementById('cfg-margem').value) || 100;
-            config.valorKm = parseNumber(document.getElementById('cfg-valorkm').value) || 1.50;
-            config.taxaBase = parseNumber(document.getElementById('cfg-taxabase').value) || 25;
-            config.validade = parseNumber(document.getElementById('cfg-validade').value) || 3;
-            config.whatsapp = document.getElementById('cfg-whatsapp').value.trim();
+        async function salvarConfiguracoes() {
+            if (!currentUser || !supabaseClient) return;
 
-            config.fatoresDificuldade = {
+            const empresa = document.getElementById('cfg-empresa').value.trim() || "Sua Empresa";
+            const margemLucro = parseNumber(document.getElementById('cfg-margem').value);
+            const valorKm = parseNumber(document.getElementById('cfg-valorkm').value);
+            const taxaBase = parseNumber(document.getElementById('cfg-taxabase').value);
+            const validade = parseNumber(document.getElementById('cfg-validade').value);
+            const whatsapp = document.getElementById('cfg-whatsapp').value.trim();
+
+            const fatoresDificuldade = {
                 facil: parseNumber(document.getElementById('cfg-fator-facil').value),
                 medio: parseNumber(document.getElementById('cfg-fator-medio').value),
                 dificil: parseNumber(document.getElementById('cfg-fator-dificil').value)
             };
 
-            localStorage.setItem('orcametro_config_v3_db', JSON.stringify(config));
-            alert("Configurações salvas com sucesso!");
-            carregarConfiguracoes();
+            try {
+                const { error } = await supabaseClient
+                    .from('perfis')
+                    .update({
+                        empresa,
+                        margem_lucro: margemLucro,
+                        valor_km: valorKm,
+                        taxa_base: taxaBase,
+                        validade,
+                        whatsapp,
+                        fatores_dificuldade: fatoresDificuldade
+                    })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                document.getElementById('lbl-fator-facil').innerText = `+${fatoresDificuldade.facil}%`;
+                document.getElementById('lbl-fator-medio').innerText = `+${fatoresDificuldade.medio}%`;
+                document.getElementById('lbl-fator-dificil').innerText = `+${fatoresDificuldade.dificil}%`;
+
+                alert("Configurações salvas no Supabase com sucesso!");
+            } catch (e) {
+                console.error("Erro ao salvar configurações:", e);
+                alert("Erro ao salvar configurações no servidor.");
+            }
         }
 
         function enviarWhatsApp() {
@@ -875,18 +901,24 @@
                 return;
             }
 
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
-            const cliente = document.getElementById('cliente-nome').value.trim() || "Cliente";
-            const numWhats = config.whatsapp ? config.whatsapp.replace(/\D/g, '') : "";
+            const numInput = document.getElementById('cfg-whatsapp').value.trim();
+            const limpo = numInput.replace(/\D/g, '');
+            
+            // Garante que se o usuário digitou apenas o DDD+número, adiciona o 55 do Brasil com segurança
+            const numWhats = limpo.startsWith('55') ? limpo : `55${limpo}`;
 
-            const texto = `Olá *${cliente}*, segue o orçamento solicitado para *${config.empresa}*:\n\n` +
+            const empresa = document.getElementById('cfg-empresa').value.trim() || "DN SOLUÇÕES";
+            const validadeDias = document.getElementById('cfg-validade').value.trim() || "3";
+            const cliente = document.getElementById('cliente-nome').value.trim() || "Cliente";
+
+            const texto = `Olá *${cliente}*, segue o orçamento solicitado para *${empresa}*:\n\n` +
                           `📌 *Serviço/Material:* ${materialNomeSelecionado}\n` +
                           `📐 *Área Total:* ${areaCalculada.toFixed(2).replace('.', ',')} m²\n` +
                           `💰 *Valor Total:* R$ ${valorCalculado.toFixed(2).replace('.', ',')}\n` +
-                          `⏱️ *Validade:* ${config.validade} dias\n\n` +
+                          `⏱️ *Validade:* ${validadeDias} dias\n\n` +
                           `Fico à disposição para dúvidas e aprovação!`;
 
-            const url = `https://wa.me/55${numWhats}?text=${encodeURIComponent(texto)}`;
+            const url = `https://wa.me/${numWhats}?text=${encodeURIComponent(texto)}`;
             window.open(url, '_blank');
         }
 
@@ -896,13 +928,13 @@
                 return;
             }
 
-            const config = JSON.parse(localStorage.getItem('orcametro_config_v3_db')) || configPadrao;
+            const empresa = document.getElementById('cfg-empresa').value.trim() || "DN SOLUÇÕES";
+            const validadeDias = document.getElementById('cfg-validade').value.trim() || "3";
             const cliente = document.getElementById('cliente-nome').value.trim() || "Cliente Especial";
 
             const total = `R$ ${valorCalculado.toFixed(2).replace('.', ',')}`;
             const area = `${areaCalculada.toFixed(2).replace('.', ',')} m²`;
-            const empresa = config.empresa || "DN SOLUÇÕES";
-            const validade = `${config.validade || 3} dias`;
+            const validade = `${validadeDias} dias`;
             const dataHoje = new Date().toLocaleDateString('pt-BR');
 
             const container = document.getElementById('area-impressao-pdf');
@@ -965,14 +997,6 @@
     </script>
 
     <div id="area-impressao-pdf"></div>
-
-    <footer style="text-align: center; padding: 20px 10px; font-size: 14px; color: #666; border-top: 1px solid #eee; margin-top: 40px;">
-      <p>© 2026 OrçaMetro - DN SOLUÇÕES. Todos os direitos reservados.</p>
-      <p>
-        <a href="termos.html" target="_blank" style="color: #2563EB; text-decoration: none; margin: 0 10px;">Termos de Uso</a> | 
-        <a href="privacidade.html" target="_blank" style="color: #2563EB; text-decoration: none; margin: 0 10px;">Política de Privacidade</a>
-      </p>
-    </footer>
 
 </body>
 </html>
