@@ -12,27 +12,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Supabase SDK JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = 'https://vjjzshqxohuspwjtkvbc.supabase.co';
-  const SUPABASE_KEY = 'COLE_AQUI_A_SUA_CHAVE_LONGA'; 
-
+  const SUPABASE_KEY =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqanpzaHB4b2h1c3B3anRrdmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjA4NzMsImV4cCI6MjEwMDkzNjg3M30.F6kovNGiW0uSamSiTVLzSbECwxFdnH7BZzZ7OAvQywI  
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-</script>
 
-        
-        let supabaseClient = null;
-        try {
-            if (typeof supabase !== 'undefined') {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            }
-        } catch(e) {
-            console.error("Erro ao inicializar Supabase:", e);
-        }
-    </script>
+  async function entrar() {
+    const email = document.querySelector('input[type="email"]').value;
+    const password = document.querySelector('input[type="password"]').value;
+    const btn = document.querySelector('button');
+
+    btn.innerText = 'Entrando...';
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      alert('Erro: ' + error.message);
+      btn.innerText = 'Entrar';
+    } else {
+      window.location.reload();
+    }
+  }
+</script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
