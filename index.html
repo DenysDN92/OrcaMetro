@@ -19,22 +19,42 @@
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   async function entrar() {
-    const email = document.querySelector('input[type="email"]').value;
-    const password = document.querySelector('input[type="password"]').value;
-    const btn = document.getElementById('bts-entrar');
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value.trim();
+    const btn = document.getElementById('btn-entrar');
+    const msg = document.getElementById('auth-msg');
     
+    if (!email || !password) {
+      if (msg) {
+        msg.style.color = '#f43f5e';
+        msg.innerText = 'Preencha e-mail e senha.';
+      }
+      return;
+    }
+
     if (btn) btn.innerText = 'Entrando...';
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email, 
-      password: password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email, 
+        password: password,
+      });
 
-    if (error) {
-      alert('Erro ao entrar: ' + error.message);
+      if (error) {
+        if (msg) {
+          msg.style.color = '#f43f5e';
+          msg.innerText = 'Erro ao entrar: ' + (error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message);
+        }
+        if (btn) btn.innerText = 'Entrar';
+      } else {
+        window.location.reload();
+      }
+    } catch (err) {
+      if (msg) {
+        msg.style.color = '#f43f5e';
+        msg.innerText = 'Falha de conexão. Verifique sua internet.';
+      }
       if (btn) btn.innerText = 'Entrar';
-    } else {
-      window.location.reload();
     }
   }
 </script>
