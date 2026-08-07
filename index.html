@@ -98,6 +98,7 @@
                 </button>
             </div>
             
+            <!-- Elemento de mensagem adicionado para corrigir o erro -->
             <p id="auth-msg" class="mt-4 min-h-[1.25rem] text-xs font-semibold leading-relaxed text-rose-500"></p>
         </div>
     </div>
@@ -457,78 +458,104 @@
 
         async function fazerLogin() {
             const msg = document.getElementById('auth-msg');
-            msg.style.color = '#38bdf8';
-            msg.innerText = 'Entrando...';
+            if (msg) {
+                msg.style.color = '#38bdf8';
+                msg.innerText = 'Entrando...';
+            }
 
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value.trim();
 
             if (!email || !password) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = 'Preencha e-mail e senha.';
+                if (msg) {
+                    msg.style.color = '#f43f5e';
+                    msg.innerText = 'Preencha e-mail e senha.';
+                }
                 return;
             }
 
             if (!supabase) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = 'Biblioteca Supabase não carregada.';
+                if (msg) {
+                    msg.style.color = '#f43f5e';
+                    msg.innerText = 'Biblioteca Supabase não carregada.';
+                }
                 return;
             }
 
             try {
                 const { error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) {
-                    msg.style.color = '#f43f5e';
-                    msg.innerText = 'Erro ao entrar: ' + (error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message);
+                    if (msg) {
+                        msg.style.color = '#f43f5e';
+                        msg.innerText = 'Erro ao entrar: ' + (error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message);
+                    }
                 } else {
-                    msg.style.color = '#10b981';
-                    msg.innerText = 'Sucesso!';
+                    if (msg) {
+                        msg.style.color = '#10b981';
+                        msg.innerText = 'Sucesso!';
+                    }
                     window.location.reload();
                 }
             } catch (err) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = 'Falha de conexão. Tente novamente.';
+                if (msg) {
+                    msg.style.color = '#f43f5e';
+                    msg.innerText = 'Falha de conexão. Tente novamente.';
+                }
             }
         }
 
         async function fazerCadastro() {
             const msg = document.getElementById('auth-msg');
-            msg.style.color = '#38bdf8';
-            msg.innerText = 'Criando conta...';
+            if (msg) {
+                msg.style.color = '#38bdf8';
+                msg.innerText = 'Criando conta...';
+            }
 
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value.trim();
 
             if (!email || !password) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = 'Preencha e-mail e senha.';
+                if (msg) {
+                    msg.style.color = '#f43f5e';
+                    msg.innerText = 'Preencha e-mail e senha.';
+                }
                 return;
             }
 
             if (password.length < 6) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = 'Senha mínima: 6 caracteres.';
+                if (msg) {
+                    msg.style.color = '#f43f5e';
+                    msg.innerText = 'Senha mínima: 6 caracteres.';
+                }
                 return;
             }
 
             if (!supabase) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = 'Erro de conexão.';
+                if (msg) {
+                    msg.style.color = '#f43f5e';
+                    msg.innerText = 'Erro de conexão.';
+                }
                 return;
             }
 
             try {
                 const { error } = await supabase.auth.signUp({ email, password });
                 if (error) {
-                    msg.style.color = '#f43f5e';
-                    msg.innerText = 'Erro: ' + error.message;
+                    if (msg) {
+                        msg.style.color = '#f43f5e';
+                        msg.innerText = 'Erro: ' + error.message;
+                    }
                 } else {
-                    msg.style.color = '#10b981';
-                    msg.innerText = 'Conta criada com sucesso! Faça login.';
+                    if (msg) {
+                        msg.style.color = '#10b981';
+                        msg.innerText = 'Conta criada com sucesso! Faça login.';
+                    }
                 }
             } catch(err) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = 'Falha ao conectar com o servidor Supabase.';
+                if (msg) {
+                    msg.style.color = '#f43f5e';
+                    msg.innerText = 'Falha ao conectar com o servidor Supabase.';
+                }
             }
         }
 
