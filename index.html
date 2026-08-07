@@ -15,7 +15,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = 'https://vjjzshqxohuspwjtkvbc.supabase.co';
-  const SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqanpzaHB4b2h1c3B3anRrdmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjA4NzMsImV4cCI6MjEwMDkzNjg3M30.F6kovNGiW0uSamSiTVLzSbECwxFdnH7BZzZ7OAvQywI
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqanpzaHB4b2h1c3B3anRrdmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjA4NzMsImV4cCI6MjEwMDkzNjg3M30.F6kovNGiW0uSamSiTVLzSbECwxFdnH7BZzZ7OAvQywI';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   async function entrar() {
@@ -23,16 +23,16 @@
     const password = document.querySelector('input[type="password"]').value;
     const btn = document.getElementById('bts-entrar');
     
-      btn.innerText = 'Entrando...';
+    if (btn) btn.innerText = 'Entrando...';
 
     const { data, error } = await supabase.auth.signInWithPassword({
-     email: email, 
-        password: password,
+      email: email, 
+      password: password,
     });
 
     if (error) {
       alert('Erro ao entrar: ' + error.message);
-      btn.innerText = 'Entrar';
+      if (btn) btn.innerText = 'Entrar';
     } else {
       window.location.reload();
     }
@@ -440,12 +440,12 @@
             if (btnCadastrar) btnCadastrar.addEventListener('click', fazerCadastro);
             if (btnLogout) btnLogout.addEventListener('click', fazerLogout);
 
-            if (supabaseClient) {
-                supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (supabase) {
+                supabase.auth.getSession().then(({ data: { session } }) => {
                     tratarSessao(session);
                 }).catch(e => console.error("Erro na sessão:", e));
 
-                supabaseClient.auth.onAuthStateChange((_event, session) => {
+                supabase.auth.onAuthStateChange((_event, session) => {
                     tratarSessao(session);
                 });
             }
@@ -469,7 +469,7 @@
             if (btnLogout) btnLogout.classList.remove('hidden');
 
             try {
-                const { data: perfil, error } = await supabaseClient
+                const { data: perfil, error } = await supabase
                     .from('perfis')
                     .select('*')
                     .eq('id', currentUser.id)
@@ -502,14 +502,14 @@
                 return;
             }
 
-            if (!supabaseClient) {
+            if (!supabase) {
                 msg.style.color = '#f43f5e';
                 msg.innerText = 'Biblioteca Supabase não carregada.';
                 return;
             }
 
             try {
-                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) {
                     msg.style.color = '#f43f5e';
                     msg.innerText = 'Erro ao entrar: ' + (error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message);
@@ -543,14 +543,14 @@
                 return;
             }
 
-            if (!supabaseClient) {
+            if (!supabase) {
                 msg.style.color = '#f43f5e';
                 msg.innerText = 'Erro de conexão.';
                 return;
             }
 
             try {
-                const { error } = await supabaseClient.auth.signUp({ email, password });
+                const { error } = await supabase.auth.signUp({ email, password });
                 if (error) {
                     msg.style.color = '#f43f5e';
                     msg.innerText = 'Erro: ' + error.message;
@@ -565,7 +565,7 @@
         }
 
         async function fazerLogout() {
-            if (supabaseClient) await supabaseClient.auth.signOut();
+            if (supabase) await supabase.auth.signOut();
             document.getElementById('auth-modal').style.display = 'flex';
             document.getElementById('paywall-modal').classList.add('hidden');
         }
@@ -632,9 +632,9 @@
         }
 
         async function carregarMateriaisDoBanco() {
-            if (!currentUser || !supabaseClient) return;
+            if (!currentUser || !supabase) return;
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('materiais')
                     .select('*')
                     .eq('user_id', currentUser.id);
@@ -723,7 +723,6 @@
                 return;
             }
 
-            // Pega os fatores atuais salvos nos inputs da aba config para cálculo dinâmico
             const margemPct = parseNumber(document.getElementById('cfg-margem').value) || 100;
             const valorKm = parseNumber(document.getElementById('cfg-valorkm').value) || 1.50;
             const taxaBaseInstalacao = parseNumber(document.getElementById('cfg-taxabase').value) || 25;
@@ -754,9 +753,9 @@
 
             const clienteNome = document.getElementById('cliente-nome').value.trim() || "Cliente Sem Nome";
 
-            if (currentUser && supabaseClient) {
+            if (currentUser && supabase) {
                 try {
-                    await supabaseClient.from('orcamentos').insert([
+                    await supabase.from('orcamentos').insert([
                         {
                             user_id: currentUser.id,
                             cliente: clienteNome,
@@ -775,9 +774,9 @@
             const container = document.getElementById('lista-historico');
             container.innerHTML = '';
 
-            if (currentUser && supabaseClient) {
+            if (currentUser && supabase) {
                 try {
-                    const { data: hist } = await supabaseClient
+                    const { data: hist } = await supabase
                         .from('orcamentos')
                         .select('*')
                         .eq('user_id', currentUser.id)
@@ -808,9 +807,9 @@
 
         async function limparHistorico() {
             if (confirm("Deseja apagar todo o seu histórico no banco?")) {
-                if (currentUser && supabaseClient) {
+                if (currentUser && supabase) {
                     try {
-                        await supabaseClient.from('orcamentos').delete().eq('user_id', currentUser.id);
+                        await supabase.from('orcamentos').delete().eq('user_id', currentUser.id);
                     } catch(e) {
                         console.error("Erro ao limpar histórico:", e);
                     }
@@ -831,9 +830,9 @@
                 return;
             }
 
-            if (currentUser && supabaseClient) {
+            if (currentUser && supabase) {
                 try {
-                    const { error } = await supabaseClient.from('materiais').insert([
+                    const { error } = await supabase.from('materiais').insert([
                         { user_id: currentUser.id, nome: nome, custo: custo }
                     ]);
                     if (error) throw error;
@@ -850,9 +849,9 @@
         async function removerMaterial(materialId) {
             if (!materialId) return;
             if (confirm("Deseja realmente excluir este material?")) {
-                if (currentUser && supabaseClient) {
+                if (currentUser && supabase) {
                     try {
-                        const { error } = await supabaseClient.from('materiais').delete().eq('id', materialId);
+                        const { error } = await supabase.from('materiais').delete().eq('id', materialId);
                         if (error) throw error;
                         await carregarMateriaisDoBanco();
                     } catch(e) {
@@ -864,7 +863,7 @@
         }
 
         async function salvarConfiguracoes() {
-            if (!currentUser || !supabaseClient) return;
+            if (!currentUser || !supabase) return;
 
             const empresa = document.getElementById('cfg-empresa').value.trim() || "Sua Empresa";
             const margemLucro = parseNumber(document.getElementById('cfg-margem').value);
@@ -880,7 +879,7 @@
             };
 
             try {
-                const { error } = await supabaseClient
+                const { error } = await supabase
                     .from('perfis')
                     .update({
                         empresa,
@@ -914,8 +913,6 @@
 
             const numInput = document.getElementById('cfg-whatsapp').value.trim();
             const limpo = numInput.replace(/\D/g, '');
-            
-            // Garante que se o usuário digitou apenas o DDD+número, adiciona o 55 do Brasil com segurança
             const numWhats = limpo.startsWith('55') ? limpo : `55${limpo}`;
 
             const empresa = document.getElementById('cfg-empresa').value.trim() || "DN SOLUÇÕES";
