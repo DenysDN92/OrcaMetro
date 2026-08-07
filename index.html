@@ -11,53 +11,8 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-<!-- Supabase SDK JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = 'https://vjjzshqxohuspwjtkvbc.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqanpzaHB4b2h1c3B3anRrdmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjA4NzMsImV4cCI6MjEwMDkzNjg3M30.F6kovNGiW0uSamSiTVLzSbECwxFdnH7BZzZ7OAvQywI';
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  async function entrar() {
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value.trim();
-    const btn = document.getElementById('btn-entrar');
-    const msg = document.getElementById('auth-msg');
-    
-    if (!email || !password) {
-      if (msg) {
-        msg.style.color = '#f43f5e';
-        msg.innerText = 'Preencha e-mail e senha.';
-      }
-      return;
-    }
-
-    if (btn) btn.innerText = 'Entrando...';
-
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email, 
-        password: password,
-      });
-
-      if (error) {
-        if (msg) {
-          msg.style.color = '#f43f5e';
-          msg.innerText = 'Erro ao entrar: ' + (error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message);
-        }
-        if (btn) btn.innerText = 'Entrar';
-      } else {
-        window.location.reload();
-      }
-    } catch (err) {
-      if (msg) {
-        msg.style.color = '#f43f5e';
-        msg.innerText = 'Falha de conexão. Verifique sua internet.';
-      }
-      if (btn) btn.innerText = 'Entrar';
-    }
-  }
-</script>
+    <!-- Supabase SDK JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -128,14 +83,16 @@
                 <div class="relative w-full">
                     <input type="password" id="auth-password" placeholder="Sua Senha" 
                         class="w-full rounded-xl border border-slate-800 bg-black/50 px-4 py-3 pr-12 text-sm text-white placeholder-slate-500 focus:border-amber-500 focus:outline-none transition-all">
-                    <button type="button" id="btn-entrar" onclick="entrar()" class="w-full rounded-xl bg-amber-500 py-3.5 text-sm font-bold text-slate-950 hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/10 mb-3">
-  Entrar
-</button>
-                    class="w-full rounded-xl bg-amber-500 py-3.5 text-sm font-bold text-slate-950 hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/10 active:scale-[0.98]">
+                    <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-white">
+                        <i id="eye-icon" class="fa-solid fa-eye text-xs"></i>
+                    </button>
+                </div>
+
+                <button type="button" id="btn-entrar" onclick="fazerLogin()" class="w-full rounded-xl bg-amber-500 py-3.5 text-sm font-bold text-slate-950 hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/10 active:scale-[0.98]">
                     Entrar
                 </button>
                 
-                <button type="button" id="btn-cadastrar" 
+                <button type="button" id="btn-cadastrar" onclick="fazerCadastro()"
                     class="w-full rounded-xl border border-slate-800 bg-transparent py-3 text-sm font-semibold text-slate-400 hover:text-white transition-all active:scale-[0.98]">
                     Criar Conta
                 </button>
@@ -178,7 +135,7 @@
             <div id="badge-status" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                 Online
             </div>
-            <button id="btn-logout" title="Sair da Conta" class="hidden text-gray-400 hover:text-rose-400 transition-colors p-1 ml-1">
+            <button id="btn-logout" onclick="fazerLogout()" title="Sair da Conta" class="hidden text-gray-400 hover:text-rose-400 transition-colors p-1 ml-1">
                 <i class="fa-solid fa-right-from-bracket text-base"></i>
             </button>
         </div>
@@ -387,7 +344,7 @@
         </button>
     </main>
 
-    <!-- RODAPÉ ÚNICO E ORGANIZADO -->
+    <!-- RODAPÉ -->
     <footer class="mt-12 text-center text-xs text-gray-400/80 max-w-md mx-auto px-5 space-y-2">
         <p>© 2026 OrçaMetro - DN SOLUÇÕES. Todos os direitos reservados.</p>
         <p class="text-accentYellow font-semibold tracking-wide">Licença Comercial MVP Ativa</p>
@@ -398,8 +355,11 @@
     </footer>
 
     <script>
-        let currentUser = null;
+        const SUPABASE_URL = 'https://vjjzshqxohuspwjtkvbc.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqanpzaHB4b2h1c3B3anRrdmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjA4NzMsImV4cCI6MjEwMDkzNjg3M30.F6kovNGiW0uSamSiTVLzSbECwxFdnH7BZzZ7OAvQywI';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        let currentUser = null;
         let tipoFatorAtual = 'facil';
         let valorCalculado = 0.0;
         let areaCalculada = 0.0;
@@ -441,21 +401,12 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             setupAuth();
-
             window.addEventListener('online', atualizarStatusRede);
             window.addEventListener('offline', atualizarStatusRede);
             atualizarStatusRede();
         });
 
         function setupAuth() {
-            const btnEntrar = document.getElementById('btn-entrar');
-            const btnCadastrar = document.getElementById('btn-cadastrar');
-            const btnLogout = document.getElementById('btn-logout');
-
-            if (btnEntrar) btnEntrar.addEventListener('click', fazerLogin);
-            if (btnCadastrar) btnCadastrar.addEventListener('click', fazerCadastro);
-            if (btnLogout) btnLogout.addEventListener('click', fazerLogout);
-
             if (supabase) {
                 supabase.auth.getSession().then(({ data: { session } }) => {
                     tratarSessao(session);
@@ -532,6 +483,7 @@
                 } else {
                     msg.style.color = '#10b981';
                     msg.innerText = 'Sucesso!';
+                    window.location.reload();
                 }
             } catch (err) {
                 msg.style.color = '#f43f5e';
@@ -572,7 +524,7 @@
                     msg.innerText = 'Erro: ' + error.message;
                 } else {
                     msg.style.color = '#10b981';
-                    msg.innerText = 'Conta criada com sucesso!';
+                    msg.innerText = 'Conta criada com sucesso! Faça login.';
                 }
             } catch(err) {
                 msg.style.color = '#f43f5e';
@@ -582,8 +534,7 @@
 
         async function fazerLogout() {
             if (supabase) await supabase.auth.signOut();
-            document.getElementById('auth-modal').style.display = 'flex';
-            document.getElementById('paywall-modal').classList.add('hidden');
+            window.location.reload();
         }
 
         function atualizarStatusRede() {
